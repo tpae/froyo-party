@@ -1,4 +1,6 @@
 {
+  "exclude": ["./functions"],
+  "compileOnSave": true,
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -12,10 +14,12 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "pretty": true,
     "noEmit": true,
     "jsx": "react"
   },
