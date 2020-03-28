@@ -20,7 +20,7 @@ const Routes: React.FC<{}> = () => {
         <Redirect to="/lobby" />
       </Route>
     </Switch>
-  )
+  );
 };
 
 export default Routes;

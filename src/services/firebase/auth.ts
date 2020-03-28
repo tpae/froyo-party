@@ -1,7 +1,8 @@
 import firebase from './config';
 
-export const onAuthStateChanged = (successFn, failureFn) => {
-  return firebase.auth().onAuthStateChanged(user => {
-    return user ? successFn(user) : failureFn();
-  });
-};
+const provider = new firebase.auth.FacebookAuthProvider();
+provider.addScope('email');
+
+export const signInWithFacebook = () => firebase.auth().signInWithPopup(provider);
+
+export const signOut = () => firebase.auth().signOut();
