@@ -12,7 +12,6 @@ const config = Object.freeze({
   appId: process.env.REACT_APP_FIREBASE_APP_ID || '',
 });
 
-console.log('*** Environment ***', process.env.REACT_APP_ENV);
 console.log('*** Firebase Config ***', config);
 
 if (!firebase.apps.length) {
