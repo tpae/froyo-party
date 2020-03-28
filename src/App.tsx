@@ -1,10 +1,15 @@
 import React from 'react';
+import {   BrowserRouter as Router } from 'react-router-dom';
+import './services/firebase/config';
+
+import Routes from './pages';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-function App() {
+const App: React.FC<{}> = () => {
   return (
-    <div />
+    <Router>
+      <Routes />
+    </Router>
   );
 }
 
