@@ -1,0 +1,17 @@
+.container {
+  height: 100vh;
+}
+
+.row {
+  display: flex;
+  height: 100vh;
+  cursor: pointer;
+}
+
+.col {
+  height: 100vh;
+  background: #F2F2F2;
+  box-shadow: 1px 0px 4px rgba(0, 0, 0, 0.05);
+  overflow: auto;
+  padding: 16px;
+}

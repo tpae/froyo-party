@@ -1,5 +1,7 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import AppLayout from '../../components/AppLayout';
 import TopTopics from '../../components/TopTopics';
 import AllRooms from '../../components/AllRooms';
 import CreateRoomModal from '../../components/CreateRoomModal';
@@ -7,6 +9,7 @@ import { useActiveRooms, createRoom } from '../../services/firebase';
 import styles from './Lobby.module.scss';
 
 const Lobby: React.FC<{}> = () => {
+  const history = useHistory();
   const [showCreateRoom, setShowCreateRoom] = React.useState<boolean>(false);
   const [rooms, loading] = useActiveRooms();
 
@@ -19,8 +22,8 @@ const Lobby: React.FC<{}> = () => {
   }, []);
 
   const handleJoinRoom = React.useCallback((roomId: string) => {
-    console.log('join room', roomId);
-  }, []);
+    history.push(`/room/${roomId}`);
+  }, [history]);
 
   const handleCreateRoom = React.useCallback(async (values: any) => {
     await createRoom({
@@ -40,27 +43,24 @@ const Lobby: React.FC<{}> = () => {
   }, []);
 
   return (
-    <Container fluid className={styles.container}>
-      <Row className={styles.row}>
-        <Col className={styles.col}>
-          <TopTopics onJoinTopic={handleJoinTopic} />
-        </Col>
-        <Col className={styles.mainCol} xs={6}>
-          <AllRooms
-            rooms={rooms}
-            onJoinRandomRoom={handleJoinRandomRoom}
-            onCreateRoom={handleShowCreateRoomModal}
-            onJoinRoom={handleJoinRoom}
-          />
-          <CreateRoomModal
-            show={showCreateRoom}
-            onClose={handleCloseCreateRoomModal}
-            onSubmit={handleCreateRoom}
-          />
-        </Col>
-        <Col className={styles.col}>3 of 3</Col>
-      </Row>
-    </Container>
+    <AppLayout>
+      <Col className={styles.col}>
+        <TopTopics onJoinTopic={handleJoinTopic} />
+      </Col>
+      <Col className={styles.mainCol} xs={6}>
+        <AllRooms
+          rooms={rooms}
+          onJoinRandomRoom={handleJoinRandomRoom}
+          onCreateRoom={handleShowCreateRoomModal}
+          onJoinRoom={handleJoinRoom}
+        />
+        <CreateRoomModal
+          show={showCreateRoom}
+          onClose={handleCloseCreateRoomModal}
+          onSubmit={handleCreateRoom}
+        />
+      </Col>
+    </AppLayout>
   );
 };
 

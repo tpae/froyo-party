@@ -10,7 +10,6 @@ const CreateRoomModal: React.FC<{
   show, onClose, onSubmit,
 }) => {
   const { handleSubmit, control, errors } = useForm();
-  console.log(errors);
   return (
     <Modal show={show} onHide={onClose}>
       <Form onSubmit={handleSubmit(onSubmit)}>
