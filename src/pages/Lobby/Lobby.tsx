@@ -26,13 +26,12 @@ const Lobby: React.FC<{}> = () => {
   }, [history]);
 
   const handleCreateRoom = React.useCallback(async (values: any) => {
-    await createRoom({
+    const room = await createRoom({
       ...values,
-      maxUsers: parseInt(values.maxUsers, 10),
       topics: values.topics.split(','),
     });
-    setShowCreateRoom(false);
-  }, []);
+    history.push(`/room/${room.id}`);
+  }, [history]);
 
   const handleShowCreateRoomModal = React.useCallback(() => {
     setShowCreateRoom(true);

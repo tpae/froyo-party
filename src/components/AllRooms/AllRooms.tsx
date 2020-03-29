@@ -48,7 +48,6 @@ const AllRooms: React.FC<{
             <tr>
               <th>Room Name</th>
               <th>Tags</th>
-              <th>Capacity</th>
               <th>People</th>
               <th>Location</th>
             </tr>
@@ -58,7 +57,6 @@ const AllRooms: React.FC<{
               <tr key={room.id} onClick={handleJoinRoom(room.id)}>
                 <td>{room.name}</td>
                 <td>{room.topics.join(', ')}</td>
-                <td>{`${room.users.length} / ${room.maxUsers}`}</td>
                 <td>{room.users.map((user) => room.profiles[user]?.displayName || user).join(', ')}</td>
                 <td>{room.location}</td>
               </tr>

@@ -49,22 +49,6 @@ const CreateRoomModal: React.FC<{
               </Form.Control.Feedback>
             )}
           </Form.Group>
-          <Form.Group controlId="formRoomMaxUsers">
-            <Form.Label>Max Users</Form.Label>
-            <Controller
-              as={Form.Control}
-              name="maxUsers"
-              type="number"
-              control={control}
-              rules={{ required: 'Required' }}
-              isInvalid={!!errors.maxUsers}
-            />
-            {errors.maxUsers && (
-              <Form.Control.Feedback type="invalid">
-                {errors.maxUsers.message}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
           <Form.Group controlId="formRoomTopics">
             <Form.Label>Topics</Form.Label>
             <Controller

@@ -32,9 +32,7 @@ export const getToken = functions.https.onCall(async (data, context) => {
   const room = await db.collection('rooms').doc(data.roomId).get();
   if (room.exists && context.auth) {
     const user = context.auth.uid;
-    if (room.data()!.users.includes(user)) {
-      return videoToken(user, room.id);
-    }
+    return videoToken(user, room.id);
   }
   return null;
 });
