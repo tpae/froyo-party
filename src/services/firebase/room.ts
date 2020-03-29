@@ -123,3 +123,5 @@ export const useCurrentRoom = (): [IRoom | undefined, boolean] => {
   const currentRoom = value?.docs[0];
   return [({ id: currentRoom?.id, ...currentRoom?.data() } as IRoom), loading];
 };
+
+export const getToken = firebase.functions().httpsCallable('getToken');

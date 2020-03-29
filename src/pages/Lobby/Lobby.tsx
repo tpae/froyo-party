@@ -47,14 +47,14 @@ const Lobby: React.FC<{}> = () => {
     if (currentRoom?.id && !currentRoomLoading) {
       history.push(`/room/${currentRoom.id}`);
     }
-  }, [currentRoom, currentRoomLoading]);
+  }, [currentRoom, currentRoomLoading, history]);
 
   return (
     <AppLayout>
       <Col className={styles.col}>
         <TopTopics onJoinTopic={handleJoinTopic} />
       </Col>
-      <Col className={styles.mainCol} xs={6}>
+      <Col className={styles.mainCol} xs={7}>
         {activeRoomsLoading ? (
           <Spinner animation="border" role="status">
             <span className="sr-only">Loading...</span>

@@ -29,5 +29,7 @@ module.exports = {
     'react/jsx-filename-extension': 'off',
     'react/jsx-props-no-spreading': 'off',
     'react/prop-types': 'off',
+    'jsx-a11y/media-has-caption': 'off',
+    'consistent-return': 'off',
   },
 };

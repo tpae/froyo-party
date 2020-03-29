@@ -1,12 +1,14 @@
 import React from 'react';
+import Video from 'twilio-video';
 import { Pane } from 'evergreen-ui';
 import { Col, Button } from 'react-bootstrap';
 import { useHistory, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 import AppLayout from '../../components/AppLayout';
+import Participant from '../../components/Participant';
 import {
-  useRoom, leaveRoom, joinRoom, getCurrentProfile,
+  useRoom, leaveRoom, joinRoom, getCurrentProfile, getToken,
 } from '../../services/firebase';
 import styles from './Room.module.scss';
 
@@ -15,6 +17,9 @@ const Room: React.FC<{}> = () => {
   const history = useHistory();
   const profile = getCurrentProfile();
   const [room, loading] = useRoom(roomId);
+  const [videoRoom, setVideoRoom] = React.useState(null);
+  const [participants, setParticipants] = React.useState<any[]>([]);
+  const [token, setToken] = React.useState<string | null>(null);
   const [joinable, setJoinable] = React.useState<boolean>(true);
   const hasCurrentUser = !!room.users && room.users.includes(profile.uid);
   const hasVacancy = !!room.users && room.maxUsers > room.users.length;
@@ -45,6 +50,53 @@ const Room: React.FC<{}> = () => {
     }
   }, [hasCurrentUser, hasVacancy, loading, history]);
 
+  React.useEffect(() => {
+    if (hasCurrentUser) {
+      (async function getTokenAsync() {
+        const response = await getToken({ roomId });
+        setToken(response.data);
+      }());
+    }
+  }, [hasCurrentUser, roomId]);
+
+  React.useEffect(() => {
+    if (token) {
+      const participantConnected = (participant: any) => {
+        setParticipants((prevParticipants) => [...prevParticipants, participant]);
+      };
+
+      const participantDisconnected = (participant: any) => {
+        setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
+      };
+
+      Video.connect(token, {
+        name: roomId,
+      }).then((twilioRoom: any) => {
+        setVideoRoom(twilioRoom);
+        twilioRoom.on('participantConnected', participantConnected);
+        twilioRoom.on('participantDisconnected', participantDisconnected);
+        twilioRoom.participants.forEach(participantConnected);
+      });
+
+      return () => {
+        setVideoRoom((currentRoom: any) => {
+          if (currentRoom && currentRoom!.localParticipant.state === 'connected') {
+            currentRoom!.localParticipant.tracks.forEach((trackPublication: any) => {
+              trackPublication.track.stop();
+            });
+            currentRoom!.disconnect();
+            return null;
+          }
+          return currentRoom;
+        });
+      };
+    }
+  }, [roomId, token]);
+
+  const remoteParticipants = participants.map((participant) => (
+    <Participant key={participant.sid} participant={participant} />
+  ));
+
   return (
     <AppLayout>
       <Col className={styles.videoPanel} xs={9}>
@@ -55,7 +107,15 @@ const Room: React.FC<{}> = () => {
             </Pane>
           </Pane>
           <Pane>
-            <h3 style={{ color: 'white' }}>Room</h3>
+            {videoRoom ? (
+              <Participant
+                key={(videoRoom as any).localParticipant.sid}
+                participant={(videoRoom as any).localParticipant}
+              />
+            ) : (
+              ''
+            )}
+            {remoteParticipants}
           </Pane>
         </Pane>
       </Col>

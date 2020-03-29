@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/functions';
 
 const config = Object.freeze({
   apiKey: process.env.REACT_APP_FIREBASE_APIKEY || '',
