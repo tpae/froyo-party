@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import styles from './RulesCard.module.scss';
+import styles from './TextCard.module.scss';
 
-const RulesCard: React.FC<{
+const TextCard: React.FC<{
   title: string;
 }> = ({
   title, children,
@@ -10,11 +10,9 @@ const RulesCard: React.FC<{
   <Card className={styles.card}>
     <Card.Header>{title}</Card.Header>
     <Card.Body>
-      <Card.Text>
-        {children}
-      </Card.Text>
+      {children}
     </Card.Body>
   </Card>
 );
 
-export default RulesCard;
+export default TextCard;

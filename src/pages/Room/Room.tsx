@@ -13,7 +13,7 @@ import styles from './Room.module.scss';
 const Room: React.FC<{}> = () => {
   const { roomId } = useParams();
   const history = useHistory();
-  const [roomData, loadingRoomData] = useRoom(roomId);
+  const [roomData] = useRoom(roomId);
   const [participants, setParticipants] = React.useState<any[]>([]);
   const [room, setRoom] = React.useState<any>(null);
 
@@ -57,7 +57,7 @@ const Room: React.FC<{}> = () => {
   }, [room]);
 
   return (
-    <AppLayout>
+    <AppLayout room={roomData}>
       <Col className={styles.videoPanel} xs={10}>
         <Pane>
           <Pane display="flex" flexDirection="row" justifyContent="flex-end" marginBottom="32px">

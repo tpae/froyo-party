@@ -8,6 +8,8 @@
 }
 
 .col {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   background: #F2F2F2;
   box-shadow: 1px 0px 4px rgba(0, 0, 0, 0.05);
