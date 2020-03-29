@@ -11,25 +11,25 @@ const Participant = ({ participant }) => {
     .map((publication: any) => publication.track)
     .filter((track) => track !== null);
 
+  const trackSubscribed = (track: any) => {
+    if (track.kind === 'video') {
+      setVideoTracks((vTracks) => [...vTracks, track]);
+    } else {
+      setAudioTracks((aTracks) => [...aTracks, track]);
+    }
+  };
+
+  const trackUnsubscribed = (track: any) => {
+    if (track.kind === 'video') {
+      setVideoTracks((vTracks) => vTracks.filter((v) => v !== track));
+    } else {
+      setAudioTracks((aTracks) => aTracks.filter((a) => a !== track));
+    }
+  };
+
   useEffect(() => {
     setVideoTracks(trackpubsToTracks(participant.videoTracks));
     setAudioTracks(trackpubsToTracks(participant.audioTracks));
-
-    const trackSubscribed = (track: any) => {
-      if (track.kind === 'video') {
-        setVideoTracks((vTracks) => [...vTracks, track]);
-      } else {
-        setAudioTracks((aTracks) => [...aTracks, track]);
-      }
-    };
-
-    const trackUnsubscribed = (track: any) => {
-      if (track.kind === 'video') {
-        setVideoTracks((vTracks) => vTracks.filter((v) => v !== track));
-      } else {
-        setAudioTracks((aTracks) => aTracks.filter((a) => a !== track));
-      }
-    };
 
     participant.on('trackSubscribed', trackSubscribed);
     participant.on('trackUnsubscribed', trackUnsubscribed);
@@ -45,20 +45,26 @@ const Participant = ({ participant }) => {
     const videoTrack = videoTracks[0];
     if (videoTrack) {
       videoTrack.attach(videoRef.current);
-      return () => {
-        videoTrack.detach();
-      };
     }
+    return () => {
+      if (videoTrack) {
+        videoTrack.disable();
+        videoTrack.detach();
+      }
+    };
   }, [videoTracks]);
 
   useEffect(() => {
     const audioTrack = audioTracks[0];
     if (audioTrack) {
       audioTrack.attach(audioRef.current);
-      return () => {
-        audioTrack.detach();
-      };
     }
+    return () => {
+      if (audioTrack) {
+        audioTrack.disable();
+        audioTrack.detach();
+      }
+    };
   }, [audioTracks]);
 
   return (

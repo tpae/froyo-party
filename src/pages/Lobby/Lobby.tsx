@@ -5,14 +5,13 @@ import AppLayout from '../../components/AppLayout';
 import TopTopics from '../../components/TopTopics';
 import AllRooms from '../../components/AllRooms';
 import CreateRoomModal from '../../components/CreateRoomModal';
-import { useActiveRooms, createRoom, useCurrentRoom } from '../../services/firebase';
+import { useActiveRooms, createRoom } from '../../services/firebase';
 import styles from './Lobby.module.scss';
 
 const Lobby: React.FC<{}> = () => {
   const history = useHistory();
   const [showCreateRoom, setShowCreateRoom] = React.useState<boolean>(false);
   const [activeRooms, activeRoomsLoading] = useActiveRooms();
-  const [currentRoom, currentRoomLoading] = useCurrentRoom();
 
   const handleJoinTopic = React.useCallback((topic: string) => {
     console.log(topic);
@@ -42,12 +41,6 @@ const Lobby: React.FC<{}> = () => {
   const handleCloseCreateRoomModal = React.useCallback(() => {
     setShowCreateRoom(false);
   }, []);
-
-  React.useEffect(() => {
-    if (currentRoom?.id && !currentRoomLoading) {
-      history.push(`/room/${currentRoom.id}`);
-    }
-  }, [currentRoom, currentRoomLoading, history]);
 
   return (
     <AppLayout>
