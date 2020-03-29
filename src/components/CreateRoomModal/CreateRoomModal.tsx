@@ -10,6 +10,7 @@ const CreateRoomModal: React.FC<{
   show, onClose, onSubmit,
 }) => {
   const { handleSubmit, control, errors } = useForm();
+  console.log(errors);
   return (
     <Modal show={show} onHide={onClose}>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -25,10 +26,11 @@ const CreateRoomModal: React.FC<{
               type="text"
               control={control}
               rules={{ required: 'Required' }}
+              isInvalid={!!errors.name}
             />
             {errors.name && (
               <Form.Control.Feedback type="invalid">
-                {errors.name}
+                {errors.name.message}
               </Form.Control.Feedback>
             )}
           </Form.Group>
@@ -40,10 +42,11 @@ const CreateRoomModal: React.FC<{
               type="text"
               control={control}
               rules={{ required: 'Required' }}
+              isInvalid={!!errors.location}
             />
             {errors.location && (
               <Form.Control.Feedback type="invalid">
-                {errors.location}
+                {errors.location.message}
               </Form.Control.Feedback>
             )}
           </Form.Group>
@@ -55,10 +58,11 @@ const CreateRoomModal: React.FC<{
               type="number"
               control={control}
               rules={{ required: 'Required' }}
+              isInvalid={!!errors.maxUsers}
             />
             {errors.maxUsers && (
               <Form.Control.Feedback type="invalid">
-                {errors.maxUsers}
+                {errors.maxUsers.message}
               </Form.Control.Feedback>
             )}
           </Form.Group>
@@ -71,10 +75,11 @@ const CreateRoomModal: React.FC<{
               control={control}
               placeholder="Enter topics (commas)"
               rules={{ required: 'Required' }}
+              isInvalid={!!errors.topics}
             />
             {errors.topics && (
               <Form.Control.Feedback type="invalid">
-                {errors.topics}
+                {errors.topics.message}
               </Form.Control.Feedback>
             )}
           </Form.Group>
