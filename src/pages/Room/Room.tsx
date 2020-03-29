@@ -34,9 +34,14 @@ const Room: React.FC<{}> = () => {
     (async function initializeVideo() {
       const response = await getToken({ roomId });
       const token = response.data as string;
-      Video.connect(token, {
+
+      Video.createLocalTracks({
+        audio: true,
+        video: { aspectRatio: 1 },
+      }).then((localTracks: any) => Video.connect(token, {
         name: roomId,
-      }).then((twilioRoom: any) => {
+        tracks: localTracks,
+      })).then((twilioRoom: any) => {
         setRoom(twilioRoom);
         joinRoom(twilioRoom.localParticipant.identity, twilioRoom.name);
         twilioRoom.on('participantConnected', participantConnected);
@@ -65,7 +70,7 @@ const Room: React.FC<{}> = () => {
               <Button onClick={handleLeaveRoom}>Leave Room</Button>
             </Pane>
           </Pane>
-          <Pane>
+          <Pane className={styles.participants}>
             {participants.map((participant) => (
               <Participant key={participant.sid} participant={participant} />
             ))}

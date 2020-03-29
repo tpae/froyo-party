@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import styles from './Participant.module.scss';
 
 const Participant = ({ participant }) => {
   const [videoTracks, setVideoTracks] = useState<any[]>([]);
@@ -66,7 +67,7 @@ const Participant = ({ participant }) => {
   }, [audioTracks]);
 
   return (
-    <div className="participant">
+    <div className={styles.participant}>
       <video ref={videoRef} autoPlay />
       <audio ref={audioRef} autoPlay />
     </div>

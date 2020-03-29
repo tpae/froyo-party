@@ -2,3 +2,10 @@
   background-color: #222222;
   padding: 16px;
 }
+
+.participants {
+  display: grid;
+  grid-template-rows: [outer-start] 1fr [inner-start] 1fr [inner-end] 1fr [outer-end];
+  grid-template-columns: [outer-start] 1fr [inner-start] 1fr [inner-end] 1fr [outer-end];
+  grid-gap: 5px;
+}
