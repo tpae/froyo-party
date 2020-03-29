@@ -1,5 +1,5 @@
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { getProfile } from './user';
+import { getProfile } from './auth';
 import firebase from './config';
 
 const db = firebase.firestore();
