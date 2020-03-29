@@ -12,22 +12,26 @@ export interface IUser {
   createdAt: firebase.firestore.FieldValue;
 }
 
-export const createProfile = ({
+export const getProfile = (id: string) => db.collection('users').doc(id).get();
+
+export const createProfile = async ({
   email, firstName, lastName, picture,
 }) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
-    const user: IUser = {
-      uid: currentUser.uid,
-      email,
-      firstName,
-      lastName,
-      picture,
-      createdAt: timestamp,
-    };
-    return db.collection('users').add(user);
+    const profile = await getProfile(currentUser.uid);
+    if (!profile.exists) {
+      const user: IUser = {
+        uid: currentUser.uid,
+        email,
+        firstName,
+        lastName,
+        picture,
+        createdAt: timestamp,
+      };
+      return db.collection('users').add(user);
+    }
+    return profile;
   }
   return Promise.reject(new Error('You are not signed in.'));
 };
-
-export const getProfile = (id: string) => db.collection('users').doc(id);
