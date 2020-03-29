@@ -15,6 +15,8 @@ provider.addScope('email');
 
 export const getProfile = (id: string) => db.collection('users').doc(id).get();
 
+export const getCurrentProfile = () => firebase.auth().currentUser!;
+
 export const setProfile = async ({
   email, displayName, picture,
 }) => {

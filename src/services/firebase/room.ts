@@ -1,5 +1,5 @@
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { getProfile } from './auth';
+import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
+import { getProfile, IUser } from './auth';
 import firebase from './config';
 
 const db = firebase.firestore();
@@ -11,7 +11,7 @@ export interface IRoom {
   location: string;
   topics: string[];
   users: string[];
-  profiles: Record<string, object | undefined>;
+  profiles: Record<string, IUser | undefined>;
   maxUsers: number;
   owner: string;
   active: boolean;
@@ -30,7 +30,7 @@ export const createRoom = async ({
       topics,
       location,
       users: [currentUser.uid],
-      profiles: { [currentUser.uid]: profile.data() },
+      profiles: { [currentUser.uid]: profile.data() as IUser },
       maxUsers,
       owner: currentUser.uid,
       active: true,
@@ -99,4 +99,27 @@ export const useActiveRooms = (): [IRoom[], boolean] => {
   );
   const rooms = value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
   return [rooms, loading];
+};
+
+export const useRoom = (roomId: string): [IRoom, boolean] => {
+  const [value, loading] = useDocument(
+    db.collection('rooms').doc(roomId),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    },
+  );
+  const room = ({ id: value?.id, ...value?.data() } as IRoom);
+  return [room, loading];
+};
+
+export const useCurrentRoom = (): [IRoom | undefined, boolean] => {
+  const { currentUser } = firebase.auth();
+  const [value, loading] = useCollection(
+    db.collection('rooms').where('users', 'array-contains', currentUser!.uid),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    },
+  );
+  const currentRoom = value?.docs[0];
+  return [({ id: currentRoom?.id, ...currentRoom?.data() } as IRoom), loading];
 };
