@@ -17,7 +17,7 @@ const Room: React.FC<{}> = () => {
   const history = useHistory();
   const profile = getCurrentProfile();
   const [room, loading] = useRoom(roomId);
-  const [videoRoom, setVideoRoom] = React.useState(null);
+  const [videoRoom, setVideoRoom] = React.useState<any>(null);
   const [participants, setParticipants] = React.useState<any[]>([]);
   const [token, setToken] = React.useState<string | null>(null);
   const [joinable, setJoinable] = React.useState<boolean>(true);
@@ -68,7 +68,7 @@ const Room: React.FC<{}> = () => {
   };
 
   React.useEffect(() => {
-    if (token) {
+    if (token && videoRoom === null) {
       Video.connect(token, {
         name: roomId,
       }).then((twilioRoom: any) => {
@@ -80,18 +80,14 @@ const Room: React.FC<{}> = () => {
     }
 
     return () => {
-      setVideoRoom((currentRoom: any) => {
-        if (currentRoom && currentRoom!.localParticipant.state === 'connected') {
-            currentRoom!.localParticipant.tracks.forEach((trackPublication: any) => {
-              trackPublication.track.stop();
-            });
-            currentRoom!.disconnect();
-            return null;
-        }
-        return currentRoom;
-      });
+      if (videoRoom && videoRoom.localParticipant.state === 'connected') {
+        videoRoom.localParticipant.tracks.forEach((trackPublication: any) => {
+          trackPublication.track.stop();
+        });
+        videoRoom.disconnect();
+      }
     };
-  }, [roomId, token]);
+  }, [roomId, videoRoom, token]);
 
   const remoteParticipants = participants.map((participant) => (
     <Participant key={participant.sid} participant={participant} />

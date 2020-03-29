@@ -7,6 +7,8 @@ const Participant = ({ participant }) => {
   const videoRef = useRef(null);
   const audioRef = useRef(null);
 
+  // console.log(participant, videoTracks, audioTracks);
+
   const trackpubsToTracks = (trackMap: any) => Array.from(trackMap.values())
     .map((publication: any) => publication.track)
     .filter((track) => track !== null);
@@ -48,7 +50,6 @@ const Participant = ({ participant }) => {
     }
     return () => {
       if (videoTrack) {
-        videoTrack.disable();
         videoTrack.detach();
       }
     };
@@ -61,7 +62,6 @@ const Participant = ({ participant }) => {
     }
     return () => {
       if (audioTrack) {
-        audioTrack.disable();
         audioTrack.detach();
       }
     };
