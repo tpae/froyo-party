@@ -6,6 +6,7 @@ const db = firebase.firestore();
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
 export interface IRoom {
+  id?: string;
   name: string;
   location: string;
   topics: string[];
@@ -89,13 +90,13 @@ export const leaveRoom = async (roomId) => {
   return Promise.reject(new Error('You are not signed in.'));
 };
 
-export const useActiveRooms = () => {
-  const [value, loading, error] = useCollection(
+export const useActiveRooms = (): [IRoom[], boolean] => {
+  const [value, loading] = useCollection(
     db.collection('rooms').where('active', '==', true),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
     },
   );
-  const rooms = value?.empty ? [] : value?.docs.map((room) => (room.data() as IRoom));
-  return [rooms, loading, error];
+  const rooms = value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
+  return [rooms, loading];
 };

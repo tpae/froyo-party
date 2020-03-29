@@ -9,7 +9,7 @@ const TopTopics: React.FC<{
   const handleJoinTopic = React.useCallback((topic: string) => (event: React.MouseEvent) => {
     event.preventDefault();
     onJoinTopic(topic);
-  }, []);
+  }, [onJoinTopic]);
 
   return (
     <Pane>
