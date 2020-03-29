@@ -7,8 +7,6 @@ const Participant = ({ participant }) => {
   const videoRef = useRef(null);
   const audioRef = useRef(null);
 
-  // console.log(participant, videoTracks, audioTracks);
-
   const trackpubsToTracks = (trackMap: any) => Array.from(trackMap.values())
     .map((publication: any) => publication.track)
     .filter((track) => track !== null);
@@ -69,7 +67,6 @@ const Participant = ({ participant }) => {
 
   return (
     <div className="participant">
-      <h3>{participant.identity}</h3>
       <video ref={videoRef} autoPlay />
       <audio ref={audioRef} autoPlay />
     </div>

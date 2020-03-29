@@ -46,7 +46,7 @@ const Lobby: React.FC<{}> = () => {
       <Col className={styles.col}>
         <TopTopics onJoinTopic={handleJoinTopic} />
       </Col>
-      <Col className={styles.mainCol} xs={7}>
+      <Col className={styles.mainCol} xs={8}>
         {activeRoomsLoading ? (
           <Spinner animation="border" role="status">
             <span className="sr-only">Loading...</span>

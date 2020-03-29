@@ -56,13 +56,9 @@ const Room: React.FC<{}> = () => {
     }
   }, [room]);
 
-  const remoteParticipants = participants.map((participant) => (
-    <Participant key={participant.sid} participant={participant} />
-  ));
-
   return (
     <AppLayout>
-      <Col className={styles.videoPanel} xs={9}>
+      <Col className={styles.videoPanel} xs={10}>
         <Pane>
           <Pane display="flex" flexDirection="row" justifyContent="flex-end" marginBottom="32px">
             <Pane>
@@ -70,15 +66,9 @@ const Room: React.FC<{}> = () => {
             </Pane>
           </Pane>
           <Pane>
-            {room ? (
-              <Participant
-                key={(room as any).localParticipant.sid}
-                participant={(room as any).localParticipant}
-              />
-            ) : (
-              ''
-            )}
-            {remoteParticipants}
+            {participants.map((participant) => (
+              <Participant key={participant.sid} participant={participant} />
+            ))}
           </Pane>
         </Pane>
       </Col>
