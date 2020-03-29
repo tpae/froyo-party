@@ -1,4 +1,5 @@
 import { useCollection } from 'react-firebase-hooks/firestore';
+import { getProfile } from './user';
 import firebase from './config';
 
 const db = firebase.firestore();
@@ -9,26 +10,31 @@ export interface IRoom {
   location: string;
   topics: string[];
   users: string[];
+  profiles: Record<string, object | undefined>;
   maxUsers: number;
   owner: string;
   active: boolean;
   createdAt: firebase.firestore.FieldValue;
+  updatedAt: firebase.firestore.FieldValue;
 }
 
-export const createRoom = ({
+export const createRoom = async ({
   name, topics, maxUsers, location,
 }) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
+    const profile = await getProfile(currentUser.uid);
     const room: IRoom = {
       name,
       topics,
       location,
       users: [currentUser.uid],
+      profiles: { [currentUser.uid]: profile.data() },
       maxUsers,
       owner: currentUser.uid,
       active: true,
       createdAt: timestamp,
+      updatedAt: timestamp,
     };
     return db.collection('rooms').add(room);
   }
@@ -40,6 +46,7 @@ export const getRoom = (roomId: string) => db.collection('rooms').doc(roomId).ge
 export const joinRoom = async (roomId) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
+    const profile = await getProfile(currentUser.uid);
     const room = await getRoom(roomId);
     if (!room.exists) { return Promise.reject(new Error('Room does not exist.')); }
 
@@ -54,6 +61,9 @@ export const joinRoom = async (roomId) => {
 
     return room.ref.update({
       users: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+      active: true,
+      profiles: { ...roomData.profiles, [currentUser.uid]: profile.data() },
+      updatedAt: timestamp,
     });
   }
   return Promise.reject(new Error('You are not signed in.'));
@@ -73,6 +83,7 @@ export const leaveRoom = async (roomId) => {
     return room.ref.update({
       users: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
       active: roomData.users.length - 1 > 0,
+      updatedAt: timestamp,
     });
   }
   return Promise.reject(new Error('You are not signed in.'));
