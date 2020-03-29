@@ -59,16 +59,16 @@ const Room: React.FC<{}> = () => {
     }
   }, [hasCurrentUser, roomId]);
 
+  const participantConnected = (participant: any) => {
+    setParticipants((prevParticipants) => [...prevParticipants, participant]);
+  };
+
+  const participantDisconnected = (participant: any) => {
+    setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
+  };
+
   React.useEffect(() => {
     if (token) {
-      const participantConnected = (participant: any) => {
-        setParticipants((prevParticipants) => [...prevParticipants, participant]);
-      };
-
-      const participantDisconnected = (participant: any) => {
-        setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
-      };
-
       Video.connect(token, {
         name: roomId,
       }).then((twilioRoom: any) => {
@@ -77,20 +77,20 @@ const Room: React.FC<{}> = () => {
         twilioRoom.on('participantDisconnected', participantDisconnected);
         twilioRoom.participants.forEach(participantConnected);
       });
+    }
 
-      return () => {
-        setVideoRoom((currentRoom: any) => {
-          if (currentRoom && currentRoom!.localParticipant.state === 'connected') {
+    return () => {
+      setVideoRoom((currentRoom: any) => {
+        if (currentRoom && currentRoom!.localParticipant.state === 'connected') {
             currentRoom!.localParticipant.tracks.forEach((trackPublication: any) => {
               trackPublication.track.stop();
             });
             currentRoom!.disconnect();
             return null;
-          }
-          return currentRoom;
-        });
-      };
-    }
+        }
+        return currentRoom;
+      });
+    };
   }, [roomId, token]);
 
   const remoteParticipants = participants.map((participant) => (
