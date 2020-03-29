@@ -44,7 +44,7 @@ export const createRoom = async ({
 
 export const getRoom = (roomId: string) => db.collection('rooms').doc(roomId).get();
 
-export const joinRoom = async (roomId) => {
+export const joinRoom = async (roomId: string) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
     const profile = await getProfile(currentUser.uid);
@@ -70,7 +70,7 @@ export const joinRoom = async (roomId) => {
   return Promise.reject(new Error('You are not signed in.'));
 };
 
-export const leaveRoom = async (roomId) => {
+export const leaveRoom = async (roomId: string) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
     const room = await getRoom(roomId);
