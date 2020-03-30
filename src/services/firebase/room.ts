@@ -24,12 +24,13 @@ export const createRoom = async ({
   const { currentUser } = firebase.auth();
   if (currentUser) {
     const profile = await getProfile(currentUser.uid);
+    const { email: omitted, ...rest } = profile.data() as any;
     const room: IRoom = {
       name,
       topics,
       location,
       users: [],
-      profiles: { [currentUser.uid]: profile.data() as IUser },
+      profiles: { [currentUser.uid]: rest as IUser },
       owner: currentUser.uid,
       active: true,
       createdAt: timestamp,
@@ -48,10 +49,11 @@ export const joinRoom = async (userId: string, roomId: string) => {
   if (!room.exists) { return Promise.reject(new Error('Room does not exist.')); }
 
   const roomData: IRoom = room.data() as IRoom;
+  const { email: omitted, ...rest } = profile.data() as any;
   return room.ref.update({
     users: firebase.firestore.FieldValue.arrayUnion(userId),
     active: true,
-    profiles: { ...roomData.profiles, [userId]: profile.data() },
+    profiles: { ...roomData.profiles, [userId]: rest },
     updatedAt: timestamp,
   });
 };

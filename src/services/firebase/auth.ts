@@ -2,7 +2,7 @@ import firebase from './config';
 
 export interface IUser {
   uid: string;
-  email: string;
+  email?: string;
   displayName: string;
   picture?: string;
   updatedAt: firebase.firestore.FieldValue;
