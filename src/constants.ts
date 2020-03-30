@@ -30,4 +30,9 @@ export const TOPICS = [
     title: 'Entertainment',
     description: 'Alternatives to traditional forms of entertainment that can keep the talent and audiences safe and healthy.',
   },
+  {
+    tag: 'random',
+    title: 'Just Random',
+    description: 'Talk about pretty much anything!',
+  },
 ];

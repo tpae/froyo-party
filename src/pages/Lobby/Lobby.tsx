@@ -6,6 +6,7 @@ import TopTopics from '../../components/TopTopics';
 import AllRooms from '../../components/AllRooms';
 import CreateRoomModal from '../../components/CreateRoomModal';
 import { useActiveRooms, createRoom } from '../../services/firebase';
+import { TOPICS } from '../../constants';
 import styles from './Lobby.module.scss';
 
 const Lobby: React.FC<{}> = () => {
@@ -13,13 +14,34 @@ const Lobby: React.FC<{}> = () => {
   const [showCreateRoom, setShowCreateRoom] = React.useState<boolean>(false);
   const [activeRooms, activeRoomsLoading] = useActiveRooms();
 
-  const handleJoinTopic = React.useCallback((topic: string) => {
-    console.log(topic);
-  }, []);
+  const handleJoinTopic = React.useCallback(async (topic: string) => {
+    const rooms = activeRooms.filter((room) => room.topics.includes(topic));
+    if (rooms.length > 0) {
+      const room = rooms[Math.floor(Math.random() * rooms.length)];
+      history.push(`/room/${room.id}`);
+    } else {
+      const room = await createRoom({
+        name: TOPICS.find((item) => item.tag === topic)?.title,
+        topics: [topic],
+        location: 'Anywhere',
+      });
+      history.push(`/room/${room.id}`);
+    }
+  }, [activeRooms, history]);
 
-  const handleJoinRandomRoom = React.useCallback(() => {
-    console.log('random');
-  }, []);
+  const handleJoinRandomRoom = React.useCallback(async () => {
+    if (activeRooms.length > 0) {
+      const room = activeRooms[Math.floor(Math.random() * activeRooms.length)];
+      history.push(`/room/${room.id}`);
+    } else {
+      const room = await createRoom({
+        name: TOPICS.find((item) => item.tag === 'random')?.title,
+        topics: ['random'],
+        location: 'Anywhere',
+      });
+      history.push(`/room/${room.id}`);
+    }
+  }, [activeRooms, history]);
 
   const handleJoinRoom = React.useCallback((roomId: string) => {
     history.push(`/room/${roomId}`);

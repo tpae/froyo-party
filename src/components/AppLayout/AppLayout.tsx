@@ -35,7 +35,15 @@ const AppLayout: React.FC<{
 
   const handleAbout = () => {
     setAnchorEl(null);
-    Swal.fire('Thanks for trying this out! 🙇‍♂️');
+    Swal.fire({
+      title: 'Thanks for trying this out! 🙇‍♂️',
+      buttonsStyling: false,
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-danger',
+      },
+      confirmButtonText: 'You got it d00d',
+    });
   };
 
   const handleSignOut = () => {
