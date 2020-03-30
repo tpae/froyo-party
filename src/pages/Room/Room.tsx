@@ -65,7 +65,7 @@ const Room: React.FC<{}> = () => {
     <AppLayout room={roomData}>
       <Col className={styles.videoPanel} xs={10}>
         <Pane>
-          <Pane display="flex" flexDirection="row" justifyContent="flex-end" marginBottom="32px">
+          <Pane display="flex" flexDirection="row" justifyContent="flex-end" marginBottom="16px">
             <Pane>
               <Button onClick={handleLeaveRoom}>Leave Room</Button>
             </Pane>
