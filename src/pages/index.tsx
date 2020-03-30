@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 
 import PrivateRoute from '../components/PrivateRoute';
 import AuthRoute from '../components/AuthRoute';
