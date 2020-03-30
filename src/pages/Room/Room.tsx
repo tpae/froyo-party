@@ -37,7 +37,7 @@ const Room: React.FC<{}> = () => {
 
       Video.createLocalTracks({
         audio: true,
-        video: { aspectRatio: 1 },
+        video: { aspectRatio: 16 / 9 },
       }).then((localTracks: any) => Video.connect(token, {
         name: roomId,
         tracks: localTracks,

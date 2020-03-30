@@ -10,7 +10,7 @@ import { IRoom } from '../../services/firebase';
 
 const videoConstraints = {
   facingMode: 'user',
-  aspectRatio: 1,
+  aspectRatio: 16 / 9,
 };
 
 const AppLayout: React.FC<{

@@ -5,7 +5,8 @@
 
 .participants {
   display: grid;
-  grid-template-rows: [outer-start] 1fr [inner-start] 1fr [inner-end] 1fr [outer-end];
-  grid-template-columns: [outer-start] 1fr [inner-start] 1fr [inner-end] 1fr [outer-end];
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
   grid-gap: 5px;
+  align-items: stretch;
+  height: 90vh;
 }
