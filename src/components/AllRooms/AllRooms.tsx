@@ -1,6 +1,8 @@
 import React from 'react';
 import { Pane } from 'evergreen-ui';
 import { Button, Table } from 'react-bootstrap';
+import Avatar from '@material-ui/core/Avatar';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import { IRoom } from '../../services/firebase';
 import styles from './AllRooms.module.scss';
 
@@ -43,7 +45,7 @@ const AllRooms: React.FC<{
         </Pane>
       </Pane>
       <Pane>
-        <Table striped bordered hover className={styles.table}>
+        <Table hover className={styles.table}>
           <thead>
             <tr>
               <th>Room Name</th>
@@ -57,7 +59,13 @@ const AllRooms: React.FC<{
               <tr key={room.id} onClick={handleJoinRoom(room.id)}>
                 <td>{room.name}</td>
                 <td>{room.topics.join(', ')}</td>
-                <td>{room.users.map((user) => room.profiles[user]?.displayName || user).join(', ')}</td>
+                <td>
+                  <AvatarGroup max={4}>
+                    {room.users.map((user) => (
+                      <Avatar alt={room.profiles[user]?.displayName} src={room.profiles[user]?.picture} />
+                    ))}
+                  </AvatarGroup>
+                </td>
                 <td>{room.location}</td>
               </tr>
             ))}
