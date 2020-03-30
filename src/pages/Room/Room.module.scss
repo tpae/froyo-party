@@ -6,7 +6,7 @@
 .participants {
   display: grid;
   grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-  grid-gap: 5px;
+  grid-gap: 3px;
   align-items: stretch;
   height: 90vh;
 }
