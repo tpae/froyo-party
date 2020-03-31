@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 import { getProfile, IUser } from './auth';
 import firebase from './config';
@@ -42,35 +43,6 @@ export const createRoom = async ({
 };
 
 export const getRoom = (roomId: string) => db.collection('rooms').doc(roomId).get();
-
-export const joinRoom = async (userId: string, roomId: string) => {
-  const profile = await getProfile(userId);
-  const room = await getRoom(roomId);
-  if (!room.exists) { return Promise.reject(new Error('Room does not exist.')); }
-
-  const roomData: IRoom = room.data() as IRoom;
-  const { email: omitted, ...rest } = profile.data() as any;
-  return room.ref.update({
-    users: firebase.firestore.FieldValue.arrayUnion(userId),
-    active: true,
-    profiles: { ...roomData.profiles, [userId]: rest },
-    updatedAt: timestamp,
-  });
-};
-
-export const leaveRoom = async (userId: string, roomId: string) => {
-  const room = await getRoom(roomId);
-  if (!room.exists) { return Promise.reject(new Error('Room does not exist.')); }
-
-  const roomData: IRoom = room.data() as IRoom;
-  const { [userId]: omitted, ...profiles } = roomData.profiles;
-  return room.ref.update({
-    users: firebase.firestore.FieldValue.arrayRemove(userId),
-    active: roomData.users.length - 1 > 0,
-    profiles,
-    updatedAt: timestamp,
-  });
-};
 
 export const useActiveRooms = (): [IRoom[], boolean] => {
   const [value, loading] = useCollection(
@@ -127,3 +99,19 @@ export const getRandomRoomByTopic = async ({
 };
 
 export const getToken = firebase.functions().httpsCallable('getToken');
+
+export const usePresence = (roomId: string, userId: string) => {
+  useEffect(() => {
+    const onlineRef = firebase.database().ref('.info/connected');
+    const roomRef = firebase.database().ref(`/rooms/${roomId}/${userId}`);
+    onlineRef.on('value', () => {
+      roomRef.onDisconnect().set('offline')
+        .then(() => {
+          roomRef.set('online');
+        });
+    });
+    return () => {
+      roomRef.set('offline');
+    };
+  }, []);
+};

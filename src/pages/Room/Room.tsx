@@ -6,7 +6,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import AppLayout from '../../components/AppLayout';
 import Participant from '../../components/Participant';
 import {
-  useRoom, leaveRoom, joinRoom, getToken,
+  useRoom, getToken, getCurrentProfile, usePresence,
 } from '../../services/firebase';
 import styles from './Room.module.scss';
 
@@ -14,9 +14,11 @@ const Room: React.FC<{}> = () => {
   const { roomId } = useParams();
   const history = useHistory();
   const [roomData] = useRoom(roomId);
+  const profile = getCurrentProfile();
   const [micOn, setMicOn] = React.useState<boolean | undefined>(undefined);
   const [participants, setParticipants] = React.useState<any[]>([]);
   const [room, setRoom] = React.useState<any>(null);
+  usePresence(roomId, profile.uid);
 
   const handleLeaveRoom = React.useCallback(async (event: React.MouseEvent) => {
     event.preventDefault();
@@ -53,7 +55,6 @@ const Room: React.FC<{}> = () => {
       })).then((twilioRoom: any) => {
         setRoom(twilioRoom);
         setMicOn(true);
-        joinRoom(twilioRoom.localParticipant.identity, twilioRoom.name);
         twilioRoom.on('participantConnected', participantConnected);
         twilioRoom.on('participantDisconnected', participantDisconnected);
         twilioRoom.participants.forEach(participantConnected);
@@ -67,7 +68,6 @@ const Room: React.FC<{}> = () => {
         trackPublication.track.stop();
       });
       room.disconnect();
-      leaveRoom(room.localParticipant.identity, room.name);
     }
   }, [room]);
 
