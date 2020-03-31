@@ -1,4 +1,4 @@
-![Deploy](https://github.com/tpae/froyo-party/workflows/Deploy/badge.svg?branch=master)
+![Build and Deploy](https://github.com/tpae/froyo-party/workflows/Build%20and%20Deploy/badge.svg)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
