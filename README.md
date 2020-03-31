@@ -1,6 +1,6 @@
-![Build and Deploy](https://github.com/tpae/froyo-party/workflows/Build%20and%20Deploy/badge.svg)
+# Froyo Party
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Build and Deploy](https://github.com/tpae/froyo-party/workflows/Build%20and%20Deploy/badge.svg)
 
 ## Available Scripts
 
