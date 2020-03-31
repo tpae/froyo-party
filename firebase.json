@@ -11,6 +11,7 @@
   },
   "hosting": {
     "predeploy": [
+      "yarn install",
       "yarn run build"
     ],
     "public": "build",

@@ -12,15 +12,12 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: '8.x'
+          node-version: '10.x'
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Function Dependencies
         run: npm install
         working-directory: ./functions
-      - name: Install Dependencies
-        run: yarn install
-        working-directory: ./
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
