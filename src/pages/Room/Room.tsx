@@ -14,7 +14,7 @@ const Room: React.FC<{}> = () => {
   const { roomId } = useParams();
   const history = useHistory();
   const [roomData] = useRoom(roomId);
-  const [mute, setMute] = React.useState<boolean>(false);
+  const [micOn, setMicOn] = React.useState<boolean | undefined>(undefined);
   const [participants, setParticipants] = React.useState<any[]>([]);
   const [room, setRoom] = React.useState<any>(null);
 
@@ -23,13 +23,13 @@ const Room: React.FC<{}> = () => {
     history.push('/lobby');
   }, [history]);
 
-  const handleMute = React.useCallback(async (event: React.MouseEvent) => {
+  const handleMic = React.useCallback(async (event: React.MouseEvent) => {
     event.preventDefault();
     room.localParticipant.audioTracks.forEach((trackPublication: any) => {
-      trackPublication.track.enable(!mute);
+      trackPublication.track.enable(micOn);
     });
-    setMute(!mute);
-  }, [room, mute]);
+    setMicOn(!micOn);
+  }, [room, micOn]);
 
   const participantConnected = (participant: any) => {
     setParticipants((prevParticipants) => [...prevParticipants, participant]);
@@ -52,6 +52,7 @@ const Room: React.FC<{}> = () => {
         tracks: localTracks,
       })).then((twilioRoom: any) => {
         setRoom(twilioRoom);
+        setMicOn(true);
         joinRoom(twilioRoom.localParticipant.identity, twilioRoom.name);
         twilioRoom.on('participantConnected', participantConnected);
         twilioRoom.on('participantDisconnected', participantDisconnected);
@@ -71,7 +72,7 @@ const Room: React.FC<{}> = () => {
   }, [room]);
 
   return (
-    <AppLayout room={roomData} micOn={!mute} onMicToggle={handleMute}>
+    <AppLayout room={roomData} micOn={micOn} onMicToggle={handleMic}>
       <Col className={styles.videoPanel} xs={10}>
         <Pane>
           <Pane display="flex" flexDirection="row" justifyContent="flex-end" marginBottom="16px">
