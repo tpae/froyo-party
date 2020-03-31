@@ -17,6 +17,7 @@ const Routes: React.FC<{}> = () => {
   return (
     <Switch>
       <PrivateRoute isAuthenticated={!!user} exact path="/lobby" component={Lobby} />
+      <PrivateRoute isAuthenticated={!!user} exact path="/topic/:topic" component={Lobby} />
       <PrivateRoute isAuthenticated={!!user} exact path="/room/:roomId" component={Room} />
       <AuthRoute isAuthenticated={!!user} exact path="/login" component={Onboarding} />
       <Route path="*">

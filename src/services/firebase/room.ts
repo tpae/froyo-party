@@ -94,4 +94,36 @@ export const useRoom = (roomId: string): [IRoom, boolean] => {
   return [room, loading];
 };
 
+export const getRandomRoom = async ({
+  rooms,
+  name,
+  topics,
+  location,
+}) => {
+  if (rooms.length > 0) {
+    return rooms[Math.floor(Math.random() * rooms.length)];
+  }
+  const room = await createRoom({
+    name,
+    topics,
+    location,
+  });
+  return room;
+};
+
+export const getRandomRoomByTopic = async ({
+  rooms, topic, name, location,
+}) => {
+  const filteredRooms = rooms.filter((room) => room.topics.includes(topic));
+  if (filteredRooms.length > 0) {
+    return rooms[Math.floor(Math.random() * filteredRooms.length)];
+  }
+  const room = await createRoom({
+    name,
+    topics: [topic],
+    location,
+  });
+  return room;
+};
+
 export const getToken = firebase.functions().httpsCallable('getToken');

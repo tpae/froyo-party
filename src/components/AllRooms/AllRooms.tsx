@@ -62,7 +62,11 @@ const AllRooms: React.FC<{
                 <td>
                   <AvatarGroup max={4}>
                     {room.users.map((user) => (
-                      <Avatar alt={room.profiles[user]?.displayName} src={room.profiles[user]?.picture} />
+                      <Avatar
+                        key={user}
+                        alt={room.profiles[user]?.displayName}
+                        src={room.profiles[user]?.picture}
+                      />
                     ))}
                   </AvatarGroup>
                 </td>
