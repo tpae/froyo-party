@@ -10,8 +10,12 @@ export interface IUser {
 
 const db = firebase.firestore();
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-const provider = new firebase.auth.FacebookAuthProvider();
-provider.addScope('email');
+const facebookProvider = new firebase.auth.FacebookAuthProvider();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+facebookProvider.addScope('email');
+googleProvider.addScope('https://www.googleapis.com/auth/userinfo.email');
+googleProvider.addScope('https://www.googleapis.com/auth/userinfo.profile');
 
 export const getProfile = (id: string) => db.collection('users').doc(id).get();
 
@@ -36,7 +40,23 @@ export const setProfile = async ({
 
 export const signInWithFacebook = async () => {
   try {
-    const result = await firebase.auth().signInWithPopup(provider);
+    const result = await firebase.auth().signInWithPopup(facebookProvider);
+    if (result.user) {
+      await setProfile({
+        email: result.user.email,
+        displayName: result.user.displayName,
+        picture: result.user.photoURL,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+export const signInWithGoogle = async () => {
+  try {
+    const result = await firebase.auth().signInWithPopup(googleProvider);
     if (result.user) {
       await setProfile({
         email: result.user.email,

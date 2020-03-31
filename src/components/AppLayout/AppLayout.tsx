@@ -11,6 +11,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Swal from 'sweetalert2';
 
 import TextCard from '../TextCard';
+import MicButton from '../MicButton';
 import styles from './AppLayout.module.scss';
 import { IRoom, signOut } from '../../services/firebase';
 
@@ -21,7 +22,11 @@ const videoConstraints = {
 
 const AppLayout: React.FC<{
   room?: IRoom;
-}> = ({ room, children }) => {
+  micOn?: boolean;
+  onMicToggle?: (event: React.MouseEvent) => void;
+}> = ({
+  room, micOn, onMicToggle, children,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -61,6 +66,9 @@ const AppLayout: React.FC<{
             mirrored
             videoConstraints={videoConstraints}
           />
+          {micOn !== undefined && (
+            <MicButton on={micOn} onClick={onMicToggle} style={{ position: 'absolute', right: 0 }} />
+          )}
           <Pane flex="1" flexGrow="100" overflow="auto" padding="16px">
             {room?.id && (
             <TextCard title="Room Info">

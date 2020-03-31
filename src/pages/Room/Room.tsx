@@ -14,6 +14,7 @@ const Room: React.FC<{}> = () => {
   const { roomId } = useParams();
   const history = useHistory();
   const [roomData] = useRoom(roomId);
+  const [mute, setMute] = React.useState<boolean>(false);
   const [participants, setParticipants] = React.useState<any[]>([]);
   const [room, setRoom] = React.useState<any>(null);
 
@@ -21,6 +22,14 @@ const Room: React.FC<{}> = () => {
     event.preventDefault();
     history.push('/lobby');
   }, [history]);
+
+  const handleMute = React.useCallback(async (event: React.MouseEvent) => {
+    event.preventDefault();
+    room.localParticipant.audioTracks.forEach((trackPublication: any) => {
+      trackPublication.track.enable(!mute);
+    });
+    setMute(!mute);
+  }, [room, mute]);
 
   const participantConnected = (participant: any) => {
     setParticipants((prevParticipants) => [...prevParticipants, participant]);
@@ -62,7 +71,7 @@ const Room: React.FC<{}> = () => {
   }, [room]);
 
   return (
-    <AppLayout room={roomData}>
+    <AppLayout room={roomData} micOn={!mute} onMicToggle={handleMute}>
       <Col className={styles.videoPanel} xs={10}>
         <Pane>
           <Pane display="flex" flexDirection="row" justifyContent="flex-end" marginBottom="16px">
