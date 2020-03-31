@@ -71,7 +71,7 @@ export const getToken = functions.https.onCall(async (data, context) => {
 
 export const onUserRoomStatusChanged = functions.database
   .ref('/rooms/{roomId}/{userId}')
-  .onUpdate((event, context) => {
+  .onWrite((event, context) => {
     const { roomId, userId } = context.params;
     return event.after.ref.once('value')
       .then((snapshot) => snapshot.val())

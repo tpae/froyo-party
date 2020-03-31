@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
-import { getProfile, IUser } from './auth';
+import { IUser } from './auth';
 import firebase from './config';
 
 const db = firebase.firestore();
@@ -24,14 +24,12 @@ export const createRoom = async ({
 }) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
-    const profile = await getProfile(currentUser.uid);
-    const { email: omitted, ...rest } = profile.data() as any;
     const room: IRoom = {
       name,
       topics,
       location,
       users: [],
-      profiles: { [currentUser.uid]: rest as IUser },
+      profiles: {},
       owner: currentUser.uid,
       active: true,
       createdAt: timestamp,
@@ -113,5 +111,5 @@ export const usePresence = (roomId: string, userId: string) => {
     return () => {
       roomRef.set('offline');
     };
-  }, []);
+  }, [roomId, userId]);
 };
