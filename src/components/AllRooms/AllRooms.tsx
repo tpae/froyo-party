@@ -39,7 +39,7 @@ const AllRooms: React.FC<{
           {rooms.length}
           )
         </h3>
-        <Pane>
+        <Pane display="flex">
           <Button variant="outline-secondary" style={{ marginRight: '12px' }} onClick={handleJoinRandomRoom}>Join Random Room</Button>
           <Button onClick={handleCreateRoom}>Create Room</Button>
         </Pane>

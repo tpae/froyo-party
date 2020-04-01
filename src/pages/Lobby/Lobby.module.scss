@@ -1,9 +1,15 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins/_breakpoints";
+
 .col {
-  height: 100vh;
   background: #F2F2F2;
   box-shadow: 1px 0px 4px rgba(0, 0, 0, 0.05);
-  overflow: auto;
   padding: 16px;
+  @include media-breakpoint-up(sm) {
+    overflow: auto;
+    height: 100vh;
+  }
 }
 
 .mainCol {
