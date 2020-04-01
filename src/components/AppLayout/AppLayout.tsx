@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { useMediaQuery } from 'react-responsive';
 import Swal from 'sweetalert2';
 
 import TextCard from '../TextCard';
@@ -29,6 +30,9 @@ const AppLayout: React.FC<{
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const isDesktopOrLaptop = useMediaQuery({
+    query: '(min-device-width: 1224px)',
+  });
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -59,7 +63,7 @@ const AppLayout: React.FC<{
     <Container fluid className={styles.container}>
       <Row className={styles.row}>
         {children}
-        <Col className={styles.col} xs={2}>
+        <Col className={styles.col} xs={12} sm={3} md={2}>
           <Webcam
             audio={false}
             width="100%"
@@ -114,7 +118,7 @@ const AppLayout: React.FC<{
           >
             <img src="/logo.svg" alt="Froyo" />
             <Pane>
-              <Button>Share froyo</Button>
+              {isDesktopOrLaptop && <Button>Share froyo</Button>}
               <IconButton onClick={handleClick}>
                 <MoreVertIcon />
               </IconButton>

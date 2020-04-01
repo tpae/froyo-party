@@ -1,3 +1,7 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins/_breakpoints";
+
 .videoPanel {
   background-color: #222222;
   padding: 16px;
@@ -5,7 +9,10 @@
 
 .participants {
   display: grid;
-  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+  @include media-breakpoint-up(sm) {
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  }
   grid-gap: 3px;
   align-items: stretch;
   height: 90vh;

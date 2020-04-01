@@ -74,10 +74,10 @@ const Lobby: React.FC<{}> = () => {
 
   return (
     <AppLayout>
-      <Col className={styles.col}>
+      <Col className={styles.col} xs={12} sm={3} md={2}>
         <TopTopics onJoinTopic={handleJoinTopic} />
       </Col>
-      <Col className={styles.mainCol} xs={8}>
+      <Col className={styles.mainCol} xs={12} sm={6} md={8}>
         {activeRoomsLoading ? (
           <Spinner animation="border" role="status">
             <span className="sr-only">Loading...</span>

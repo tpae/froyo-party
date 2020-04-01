@@ -73,7 +73,7 @@ const Room: React.FC<{}> = () => {
 
   return (
     <AppLayout room={roomData} micOn={!mute} onMicToggle={handleMic}>
-      <Col className={styles.videoPanel} xs={10}>
+      <Col className={styles.videoPanel} xs={12} sm={12} md={10}>
         <Pane>
           <Pane display="flex" flexDirection="row" justifyContent="flex-end" marginBottom="16px">
             <Pane>
