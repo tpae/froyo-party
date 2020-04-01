@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 const CreateRoomModal: React.FC<{
   show: boolean;
@@ -66,13 +68,33 @@ const CreateRoomModal: React.FC<{
               </Form.Control.Feedback>
             )}
           </Form.Group>
+          <Form.Group controlId="formRoomSecret">
+            <Controller
+              as={(
+                <FormControlLabel
+                  control={(<Switch color="secondary" />)}
+                  label="Private Room"
+                />
+              )}
+              name="secret"
+              type="checkbox"
+              defaultValue={false}
+              control={control}
+              isInvalid={!!errors.secret}
+            />
+            {errors.secret && (
+              <Form.Control.Feedback type="invalid">
+                {errors.secret.message}
+              </Form.Control.Feedback>
+            )}
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>
           <Button variant="primary" type="submit">
-            Save Changes
+            Create Room
           </Button>
         </Modal.Footer>
       </Form>

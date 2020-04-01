@@ -96,6 +96,11 @@ const AppLayout: React.FC<{
                 {' '}
                 {room.location}
               </p>
+              <p>
+                Private:
+                {' '}
+                {room.secret ? 'Yes' : 'No'}
+              </p>
             </TextCard>
           )}
             <TextCard title="Froyo Rules">

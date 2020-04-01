@@ -15,12 +15,13 @@ export interface IRoom {
   profiles: Record<string, IUser | undefined>;
   owner: string;
   active: boolean;
+  secret: boolean;
   createdAt: firebase.firestore.FieldValue;
   updatedAt: firebase.firestore.FieldValue;
 }
 
 export const createRoom = async ({
-  name, topics, location,
+  name, topics, location, secret = false,
 }) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
@@ -32,6 +33,7 @@ export const createRoom = async ({
       profiles: {},
       owner: currentUser.uid,
       active: true,
+      secret,
       createdAt: timestamp,
       updatedAt: timestamp,
     };
@@ -44,7 +46,9 @@ export const getRoom = (roomId: string) => db.collection('rooms').doc(roomId).ge
 
 export const useActiveRooms = (): [IRoom[], boolean] => {
   const [value, loading] = useCollection(
-    db.collection('rooms').where('active', '==', true),
+    db.collection('rooms')
+      .where('active', '==', true)
+      .where('secret', '==', false),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
     },
