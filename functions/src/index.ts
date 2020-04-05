@@ -20,8 +20,14 @@ const joinRoom = async (userId: string, roomId: string, peerId: string) => {
   const roomData = room.data() as any;
   return room.ref.update({
     active: true,
-    profiles: { ...roomData.profiles, [userId]: rest },
-    peers: { ...roomData.peers, [userId]: { peerId, createdAt: timestamp } },
+    peers: {
+      ...roomData.peers,
+      [userId]: {
+        peerId,
+        profile: rest,
+        createdAt: timestamp,
+      },
+    },
     updatedAt: timestamp,
   });
 };
@@ -31,11 +37,9 @@ const leaveRoom = async (userId: string, roomId: string) => {
   if (!room.exists) { return Promise.reject(new Error('Room does not exist.')); }
 
   const roomData = room.data() as any;
-  const { [userId]: omittedProfile, ...profiles } = roomData.profiles;
   const { [userId]: omittedPeer, ...peers } = roomData.peers;
   return room.ref.update({
-    active: roomData.users.length - 1 > 0,
-    profiles,
+    active: Object.keys(peers).length > 0,
     peers,
     updatedAt: timestamp,
   });

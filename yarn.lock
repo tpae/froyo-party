@@ -10171,6 +10171,13 @@ react-transition-group@^4.0.0, react-transition-group@^4.3.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+react-use-user-media@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/react-use-user-media/-/react-use-user-media-0.0.0.tgz#d875321a9973574cb4262bf912cc537ee75af539"
+  integrity sha512-T0LrEppPBhS+zcL33p1zcifUCB3n7RT1gW6UIjOBP7r5pPIhl/QrLM6F4gmf6AU0mU1VDLH7CuxdfXX5+wHaig==
+  dependencies:
+    stop-media-stream "^0.0.2"
+
 react-webcam@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/react-webcam/-/react-webcam-5.0.1.tgz#36f3bb243cda8f8790e8a6906574384ab40f7c14"
@@ -11233,6 +11240,11 @@ stifle@^1.0.2:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stifle/-/stifle-1.1.1.tgz#4e4c565f19dcf9a6efa3a7379a70c42179edb8d6"
   integrity sha512-INvON4DXLAWxpor+f0ZHnYQYXBqDXQRW1znLpf5/C/AWzJ0eQQAThfdqHQ5BDkiyywD67rQGvbE4LC+Aig6K/Q==
+
+stop-media-stream@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/stop-media-stream/-/stop-media-stream-0.0.2.tgz#6efb87faac359aff5076755aa6e6ce96070b6b3e"
+  integrity sha512-S+KuTmNWA0a24KSqhS/qKwQXSeUdqqchuIxRXY8ISYB2aLRhZivBR2/iFSiY9HU8RqY5yFO+jLaxNlX+Mpk3kQ==
 
 stream-browserify@^2.0.1:
   version "2.0.2"

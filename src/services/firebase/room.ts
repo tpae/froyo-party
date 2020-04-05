@@ -1,15 +1,11 @@
 import { useEffect } from 'react';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 import Peer from 'peerjs';
+import { IUser } from './auth';
 import firebase from './config';
 
 const db = firebase.firestore();
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-const peer = new Peer(undefined, {
-  host: 'froyo-party.herokuapp.com',
-  secure: true,
-  debug: 3,
-});
 
 export interface IRoom {
   id?: string;
@@ -26,6 +22,7 @@ export interface IRoom {
 
 export interface IPeer {
   peerId: string;
+  profile: IUser;
   createdAt: firebase.firestore.FieldValue;
 }
 
@@ -110,7 +107,7 @@ export const getRandomRoomByTopic = async ({
 
 export const getToken = firebase.functions().httpsCallable('getToken');
 
-export const usePresence = (roomId: string, userId: string) => {
+export const usePresence = (roomId: string, userId: string, peer: Peer) => {
   useEffect(() => {
     const onlineRef = firebase.database().ref('.info/connected');
     const roomRef = firebase.database().ref(`/rooms/${roomId}/${userId}`);
@@ -124,5 +121,5 @@ export const usePresence = (roomId: string, userId: string) => {
     return () => {
       roomRef.set(null);
     };
-  }, [roomId, userId]);
+  }, [roomId, userId, peer.id]);
 };
