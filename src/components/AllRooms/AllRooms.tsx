@@ -60,7 +60,7 @@ const AllRooms: React.FC<{
                 <td>{room.name}</td>
                 <td>{room.topics.join(', ')}</td>
                 <td>
-                  <AvatarGroup max={4}>
+                  {/* <AvatarGroup max={4}>
                     {room.users.map((user) => (
                       <Avatar
                         key={user}
@@ -68,7 +68,7 @@ const AllRooms: React.FC<{
                         src={room.profiles[user]?.picture}
                       />
                     ))}
-                  </AvatarGroup>
+                  </AvatarGroup> */}
                 </td>
                 <td>{room.location}</td>
               </tr>

@@ -1,23 +1,32 @@
 import { useEffect } from 'react';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
-import { IUser } from './auth';
+import Peer from 'peerjs';
 import firebase from './config';
 
 const db = firebase.firestore();
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+const peer = new Peer(undefined, {
+  host: 'froyo-party.herokuapp.com',
+  secure: true,
+  debug: 3,
+});
 
 export interface IRoom {
   id?: string;
   name: string;
   location: string;
   topics: string[];
-  users: string[];
-  profiles: Record<string, IUser | undefined>;
+  peers: Record<string, IPeer>;
   owner: string;
   active: boolean;
   secret: boolean;
   createdAt: firebase.firestore.FieldValue;
   updatedAt: firebase.firestore.FieldValue;
+}
+
+export interface IPeer {
+  peerId: string;
+  createdAt: firebase.firestore.FieldValue;
 }
 
 export const createRoom = async ({
@@ -29,8 +38,7 @@ export const createRoom = async ({
       name,
       topics,
       location,
-      users: [],
-      profiles: {},
+      peers: {},
       owner: currentUser.uid,
       active: true,
       secret,
@@ -107,13 +115,14 @@ export const usePresence = (roomId: string, userId: string) => {
     const onlineRef = firebase.database().ref('.info/connected');
     const roomRef = firebase.database().ref(`/rooms/${roomId}/${userId}`);
     onlineRef.on('value', () => {
-      roomRef.onDisconnect().set('offline')
+      roomRef
+        .onDisconnect().set(null)
         .then(() => {
-          roomRef.set('online');
+          roomRef.set(peer.id);
         });
     });
     return () => {
-      roomRef.set('offline');
+      roomRef.set(null);
     };
   }, [roomId, userId]);
 };

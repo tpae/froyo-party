@@ -86,11 +86,11 @@ const AppLayout: React.FC<{
                 {' '}
                 {room.topics.join(', ')}
               </p>
-              <p>
+              {/* <p>
                 People:
                 {' '}
                 {room.users.length}
-              </p>
+              </p> */}
               <p>
                 Location:
                 {' '}

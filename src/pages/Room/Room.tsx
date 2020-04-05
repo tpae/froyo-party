@@ -27,49 +27,47 @@ const Room: React.FC<{}> = () => {
 
   const handleMic = React.useCallback(async (event: React.MouseEvent) => {
     event.preventDefault();
-    room.localParticipant.audioTracks.forEach((trackPublication: any) => {
-      trackPublication.track.enable(mute);
-    });
+
     setMute(!mute);
   }, [room, mute, setMute]);
 
-  const participantConnected = (participant: any) => {
-    setParticipants((prevParticipants) => [...prevParticipants, participant]);
-  };
+  // const participantConnected = (participant: any) => {
+  //   setParticipants((prevParticipants) => [...prevParticipants, participant]);
+  // };
 
-  const participantDisconnected = (participant: any) => {
-    setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
-  };
+  // const participantDisconnected = (participant: any) => {
+  //   setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
+  // };
 
-  React.useEffect(() => {
-    (async function initializeVideo() {
-      const response = await getToken({ roomId });
-      const token = response.data as string;
+  // React.useEffect(() => {
+  //   (async function initializeVideo() {
+  //     const response = await getToken({ roomId });
+  //     const token = response.data as string;
 
-      Video.createLocalTracks({
-        audio: true,
-        video: { aspectRatio: 16 / 9 },
-      }).then((localTracks: any) => Video.connect(token, {
-        name: roomId,
-        tracks: localTracks,
-      })).then((twilioRoom: any) => {
-        setRoom(twilioRoom);
-        setMute(false);
-        twilioRoom.on('participantConnected', participantConnected);
-        twilioRoom.on('participantDisconnected', participantDisconnected);
-        twilioRoom.participants.forEach(participantConnected);
-      });
-    }());
-  }, [roomId]);
+  //     Video.createLocalTracks({
+  //       audio: true,
+  //       video: { aspectRatio: 16 / 9 },
+  //     }).then((localTracks: any) => Video.connect(token, {
+  //       name: roomId,
+  //       tracks: localTracks,
+  //     })).then((twilioRoom: any) => {
+  //       setRoom(twilioRoom);
+  //       setMute(false);
+  //       twilioRoom.on('participantConnected', participantConnected);
+  //       twilioRoom.on('participantDisconnected', participantDisconnected);
+  //       twilioRoom.participants.forEach(participantConnected);
+  //     });
+  //   }());
+  // }, [roomId]);
 
-  React.useEffect(() => () => {
-    if (room && room.localParticipant.state === 'connected') {
-      room.localParticipant.tracks.forEach((trackPublication: any) => {
-        trackPublication.track.stop();
-      });
-      room.disconnect();
-    }
-  }, [room]);
+  // React.useEffect(() => () => {
+  //   if (room && room.localParticipant.state === 'connected') {
+  //     room.localParticipant.tracks.forEach((trackPublication: any) => {
+  //       trackPublication.track.stop();
+  //     });
+  //     room.disconnect();
+  //   }
+  // }, [room]);
 
   return (
     <AppLayout room={roomData} micOn={!mute} onMicToggle={handleMic}>
