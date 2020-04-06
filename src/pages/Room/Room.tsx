@@ -6,28 +6,36 @@ import useUserMedia from 'react-use-user-media';
 import Peer from 'peerjs';
 import AppLayout from '../../components/AppLayout';
 import Participant from '../../components/Participant';
+import usePeerCalls from '../../hooks/usePeerCalls';
 import {
   useRoom, getCurrentProfile, usePresence,
 } from '../../services/firebase';
 import styles from './Room.module.scss';
 
-const constraints = { video: true, audio: true };
+const { REACT_APP_PEER_HOST } = process.env;
 
 const Room: React.FC<{}> = () => {
   const { roomId } = useParams();
   const history = useHistory();
   const [room, loading] = useRoom(roomId);
   const profile = getCurrentProfile();
-  const { state, stream } = useUserMedia(constraints);
+  const { state, stream } = useUserMedia({ video: true, audio: true });
   const [mute, setMute] = React.useState<boolean | undefined>(undefined);
-  const [calls, setCalls] = React.useState<any>({});
   const peerRef = React.useRef<Peer>(new Peer(undefined, {
-    host: 'froyo-party.herokuapp.com',
+    host: REACT_APP_PEER_HOST,
     secure: true,
-    debug: 1,
   }));
   const peer = peerRef.current;
   usePresence(roomId, profile.uid, peer);
+
+  const calls = usePeerCalls({
+    peers: room.peers,
+    loading,
+    userId: profile.uid,
+    peer,
+    mediaState: state,
+    mediaStream: stream,
+  });
 
   const handleLeaveRoom = React.useCallback(async (event: React.MouseEvent) => {
     event.preventDefault();
@@ -39,99 +47,6 @@ const Room: React.FC<{}> = () => {
     event.preventDefault();
     setMute((prevMute) => !prevMute);
   }, [room, setMute]);
-
-  // when a room first opens, dial all the participants.
-  React.useEffect(() => {
-    // if user has accepted permissions to stream data
-    if (state === 'resolved' && stream && peer.id && !loading && room.peers && profile.uid) {
-      Object.keys(room.peers).forEach((userId) => {
-        if (!calls[userId] && userId !== profile.uid) {
-          const call = peer.call(room.peers[userId].peerId, stream, {
-            metadata: {
-              userId: profile.uid,
-            },
-          });
-
-          // if user is connected
-          call.on('stream', (connectedStream) => {
-            setCalls((prevCalls) => ({
-              ...prevCalls,
-              [userId]: {
-                ...prevCalls[userId],
-                stream: connectedStream,
-                connected: true,
-              },
-            }));
-          });
-
-          // if session is closed
-          call.on('close', () => {
-            setCalls((prevCalls) => {
-              const { [userId]: omitted, ...rest } = prevCalls;
-              return rest;
-            });
-          });
-
-          // if session has an error
-          call.on('error', (err) => {
-            console.log(err);
-            setCalls((prevCalls) => {
-              const { [userId]: omitted, ...rest } = prevCalls;
-              return rest;
-            });
-          });
-
-          // initialize default
-          setCalls((prevCalls) => ({
-            ...prevCalls,
-            [userId]: {
-              call,
-              connected: false,
-            },
-          }));
-        }
-      });
-    }
-  }, [room.peers, calls, state, stream, profile.uid, setCalls, peer.id, loading]);
-
-  // instantiate a listeners to answer calls as they come in.
-  React.useEffect(() => {
-    if (state === 'resolved' && peer.id && stream) {
-      peer.on('call', (call) => {
-        const { userId } = call.metadata;
-        call.answer(stream);
-
-        // if session is open
-        call.on('stream', (connectedStream) => {
-          setCalls((prevCalls) => ({
-            ...prevCalls,
-            [userId]: {
-              call,
-              stream: connectedStream,
-              connected: true,
-            },
-          }));
-        });
-
-        // if session is closed
-        call.on('close', () => {
-          setCalls((prevCalls) => {
-            const { [userId]: omitted, ...rest } = prevCalls;
-            return rest;
-          });
-        });
-
-        // if session has an error
-        call.on('error', (err) => {
-          console.log(err);
-          setCalls((prevCalls) => {
-            const { [userId]: omitted, ...rest } = prevCalls;
-            return rest;
-          });
-        });
-      });
-    }
-  }, [state, stream, setCalls, profile.uid, peer]);
 
   return (
     <AppLayout room={room} micOn={!mute} onMicToggle={handleMic}>
