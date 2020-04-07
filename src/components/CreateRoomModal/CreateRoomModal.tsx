@@ -17,9 +17,9 @@ const CreateRoomModal: React.FC<{
   const { handleSubmit, control, errors } = useForm();
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Create a Room</DialogTitle>
-      <DialogContent>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <DialogTitle>Create a Room</DialogTitle>
+        <DialogContent>
           <Form.Group controlId="formRoomName">
             <Form.Label>Room Name</Form.Label>
             <Controller
@@ -89,16 +89,17 @@ const CreateRoomModal: React.FC<{
             </Form.Control.Feedback>
             )}
           </Form.Group>
-        </Form>
-      </DialogContent>
-      <DialogActions>
-        <Button color="secondary" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button color="primary" type="submit">
-          Create Room
-        </Button>
-      </DialogActions>
+
+        </DialogContent>
+        <DialogActions>
+          <Button color="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button color="primary" type="submit">
+            Create Room
+          </Button>
+        </DialogActions>
+      </Form>
     </Dialog>
   );
 };
