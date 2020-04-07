@@ -8,7 +8,7 @@ const Participant = ({ stream }) => {
     if (videoRef.current) {
       videoRef.current!.srcObject = stream;
     }
-  }, [videoRef.current]);
+  }, [stream]);
 
   return (
     <div className={styles.participant}>

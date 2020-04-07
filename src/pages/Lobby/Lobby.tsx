@@ -1,41 +1,21 @@
 import React from 'react';
-import { Col, Spinner } from 'react-bootstrap';
-import { useHistory, useParams } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
+import {
+  AppBar, Tabs, Tab, Toolbar, Box, Button, IconButton,
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import AppLayout from '../../components/AppLayout';
-import TopTopics from '../../components/TopTopics';
 import AllRooms from '../../components/AllRooms';
+import Logo from '../../components/Logo';
 import CreateRoomModal from '../../components/CreateRoomModal';
 import {
-  useActiveRooms, createRoom, getRandomRoom, getRandomRoomByTopic,
+  useActiveRooms, createRoom,
 } from '../../services/firebase';
-import { TOPICS } from '../../constants';
-import styles from './Lobby.module.scss';
 
 const Lobby: React.FC<{}> = () => {
   const history = useHistory();
-  const { topic: topicParam } = useParams();
   const [showCreateRoom, setShowCreateRoom] = React.useState<boolean>(false);
   const [activeRooms, activeRoomsLoading] = useActiveRooms();
-
-  const handleJoinTopic = React.useCallback(async (topic: string) => {
-    const room = await getRandomRoomByTopic({
-      rooms: activeRooms,
-      topic,
-      name: TOPICS.find((item) => item.tag === topic)?.title as string,
-      location: 'Anywhere',
-    });
-    history.push(`/room/${room.id}`);
-  }, [activeRooms, history]);
-
-  const handleJoinRandomRoom = React.useCallback(async () => {
-    const room = await getRandomRoom({
-      rooms: activeRooms,
-      name: TOPICS.find((item) => item.tag === 'random')?.title as string,
-      topics: ['random'],
-      location: 'Anywhere',
-    });
-    history.push(`/room/${room.id}`);
-  }, [activeRooms, history]);
 
   const handleJoinRoom = React.useCallback((roomId: string) => {
     history.push(`/room/${roomId}`);
@@ -57,27 +37,24 @@ const Lobby: React.FC<{}> = () => {
     setShowCreateRoom(false);
   }, []);
 
-  React.useEffect(() => {
-    (async function initializeVideo() {
-      if (topicParam && !activeRoomsLoading) {
-        const room = await getRandomRoomByTopic({
-          rooms: activeRooms,
-          topic: topicParam,
-          name: TOPICS.find((item) => item.tag === topicParam)?.title as string || topicParam,
-          location: 'Anywhere',
-        });
-        history.push(`/room/${room.id}`);
-      }
-    }());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topicParam, activeRoomsLoading]);
-
   return (
     <AppLayout>
-      <Col className={styles.col} xs={12} sm={3} md={2}>
-        <TopTopics onJoinTopic={handleJoinTopic} />
-      </Col>
-      <Col className={styles.mainCol} xs={12} sm={6} md={8}>
+      <AppBar>
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <Box display="flex" flexDirection="row">
+            <IconButton size="small">
+              <Logo />
+            </IconButton>
+            <Tabs value={0}>
+              <Tab label="Public Rooms" />
+            </Tabs>
+          </Box>
+          <Toolbar variant="dense">
+            <Button onClick={handleShowCreateRoomModal} variant="contained" color="secondary">Create Room</Button>
+          </Toolbar>
+        </Box>
+      </AppBar>
+      <Box paddingTop="75px" paddingLeft="15px" paddingRight="15px" margin="0 auto">
         {activeRoomsLoading ? (
           <Spinner animation="border" role="status">
             <span className="sr-only">Loading...</span>
@@ -85,17 +62,15 @@ const Lobby: React.FC<{}> = () => {
         ) : (
           <AllRooms
             rooms={activeRooms}
-            onJoinRandomRoom={handleJoinRandomRoom}
-            onCreateRoom={handleShowCreateRoomModal}
             onJoinRoom={handleJoinRoom}
           />
         )}
         <CreateRoomModal
-          show={showCreateRoom}
+          open={showCreateRoom}
           onClose={handleCloseCreateRoomModal}
           onSubmit={handleCreateRoom}
         />
-      </Col>
+      </Box>
     </AppLayout>
   );
 };

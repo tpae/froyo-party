@@ -12,15 +12,15 @@ function usePeerCalls({
   peers,
   userId,
   peer,
-  mediaState,
-  mediaStream,
+  sourceState,
+  sourceStream,
   loading,
 }: {
   peers: Record<string, IPeer>;
   userId: string;
   peer: Peer;
-  mediaState: string;
-  mediaStream: MediaStream;
+  sourceState: string;
+  sourceStream: MediaStream;
   loading: boolean;
 }): Record<string, ICall> {
   const [calls, setCalls] = React.useState<Record<string, ICall>>({});
@@ -28,8 +28,8 @@ function usePeerCalls({
   // when a room first opens, dial all the participants.
   React.useEffect(() => {
     if (
-      mediaState === 'resolved'
-      && mediaStream
+      sourceState === 'resolved'
+      && sourceStream
       && peer.id
       && peers
       && userId
@@ -39,7 +39,7 @@ function usePeerCalls({
         if (!calls[peerUserId] && peerUserId !== userId) {
           const call = peer.call(
             peers[peerUserId].peerId,
-            mediaStream,
+            sourceStream,
             {
               metadata: {
                 userId: peerUserId,
@@ -91,25 +91,25 @@ function usePeerCalls({
   [
     peers,
     calls,
-    mediaState,
-    mediaStream,
+    sourceState,
+    sourceStream,
     userId,
     setCalls,
-    peer.id,
+    peer,
     loading,
   ]);
 
   // instantiate a listeners to answer calls as they come in.
   React.useEffect(() => {
     if (
-      mediaState === 'resolved'
+      sourceState === 'resolved'
       && peer.id
-      && mediaStream
+      && sourceStream
       && !loading
     ) {
       peer.on('call', (call: MediaConnection) => {
         const { userId: peerUserId } = call.metadata;
-        call.answer(mediaStream);
+        call.answer(sourceStream);
 
         // if session is open
         call.on('stream', (connectedStream: MediaStream) => {
@@ -142,8 +142,8 @@ function usePeerCalls({
       });
     }
   }, [
-    mediaState,
-    mediaStream,
+    sourceState,
+    sourceStream,
     setCalls,
     userId,
     peer,
