@@ -27,7 +27,7 @@ const Room: React.FC<{}> = () => {
   const [room, loading] = useRoom(roomId);
   const profile = getCurrentProfile();
   const { state, stream } = useUserMedia(constraints);
-  const [mute, setMute] = React.useState<boolean | undefined>(undefined);
+  const [mute, setMute] = React.useState<boolean>(false);
   const peerRef = React.useRef<Peer>(new Peer(undefined, {
     host: REACT_APP_PEER_HOST,
     secure: true,
@@ -53,7 +53,7 @@ const Room: React.FC<{}> = () => {
   const handleMic = React.useCallback(async (event: React.MouseEvent) => {
     event.preventDefault();
     if (stream) {
-      stream.getAudioTracks()[0].enabled = !mute;
+      stream.getAudioTracks()[0].enabled = mute;
       setMute((prevMute) => !prevMute);
     }
   }, [mute, stream, setMute]);
