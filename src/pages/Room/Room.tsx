@@ -28,7 +28,7 @@ const Room: React.FC<{}> = () => {
   const profile = getCurrentProfile();
   const { state, stream } = useUserMedia(constraints);
   const [mute, setMute] = React.useState<boolean>(false);
-  const peerRef = React.useRef<Peer>(new Peer(undefined, {
+  const peerRef = React.useRef<Peer>(new Peer(profile.uid, {
     host: REACT_APP_PEER_HOST,
     secure: true,
   }));
