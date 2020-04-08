@@ -28,7 +28,7 @@ const CreateRoomModal: React.FC<{
   React.useEffect(() => {
     register({ name: 'visibility' }, { required: true });
     setValue('visibility', 'public');
-  }, [register]);
+  }, [register, setValue]);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
