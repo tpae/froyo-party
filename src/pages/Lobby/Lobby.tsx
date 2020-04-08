@@ -36,6 +36,7 @@ const Lobby: React.FC<{}> = () => {
     const room = await createRoom({
       ...values,
       topics: values.topics.split(','),
+      private: values.visibility === 'private',
     });
     history.push(`/room/${room.id}`);
   }, [history]);

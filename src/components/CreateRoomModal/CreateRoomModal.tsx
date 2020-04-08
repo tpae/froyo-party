@@ -26,7 +26,8 @@ const CreateRoomModal: React.FC<{
     handleSubmit, register, errors, setValue,
   } = useForm();
   React.useEffect(() => {
-    register({ name: 'private' }, { required: true });
+    register({ name: 'visibility' }, { required: true });
+    setValue('visibility', 'public');
   }, [register]);
 
   return (
@@ -77,12 +78,12 @@ const CreateRoomModal: React.FC<{
               <Select
                 labelId="room-visibility-label"
                 id="room-visibility"
-                defaultValue={0}
-                onChange={(e) => setValue('private', !!e.target.value)}
+                defaultValue="public"
+                onChange={(e) => setValue('visibility', e.target.value)}
                 label="Room Visibility"
               >
-                <MenuItem value={1}>Private</MenuItem>
-                <MenuItem value={0}>Public</MenuItem>
+                <MenuItem value="private">Private</MenuItem>
+                <MenuItem value="public">Public</MenuItem>
               </Select>
               <FormHelperText>Public rooms can be joined by anyone</FormHelperText>
             </FormControl>

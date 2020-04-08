@@ -9,6 +9,7 @@ const AppLayout: React.FC<{
     disableGutters
     style={{
       background: hasBackground ? 'url(/wave.svg) no-repeat bottom center' : undefined,
+      backgroundSize: '100%',
       height: '100%',
     }}
   >
