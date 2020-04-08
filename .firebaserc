@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "froyo-party"
+    "default": "froyo-party-dev",
+    "production": "froyo-party"
   }
 }

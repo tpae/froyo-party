@@ -5,6 +5,7 @@
 .videoPanel {
   background-color: #222222;
   padding: 16px;
+  height: 100vh;
 }
 
 .participants {
@@ -15,5 +16,5 @@
   }
   grid-gap: 3px;
   align-items: stretch;
-  height: 90vh;
+  max-width: 1052px;
 }

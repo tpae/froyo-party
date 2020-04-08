@@ -1,104 +1,104 @@
 import React from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
-import { useForm, Controller } from 'react-hook-form';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
+} from '@material-ui/core';
+import { useForm } from 'react-hook-form';
 
 const CreateRoomModal: React.FC<{
-  show: boolean;
+  open: boolean;
   onClose: () => void;
   onSubmit: (values: any) => void;
 }> = ({
-  show, onClose, onSubmit,
+  open, onClose, onSubmit,
 }) => {
-  const { handleSubmit, control, errors } = useForm();
+  const {
+    handleSubmit, register, errors, setValue,
+  } = useForm();
+  React.useEffect(() => {
+    register({ name: 'visibility' }, { required: true });
+    setValue('visibility', 'public');
+  }, [register]);
+
   return (
-    <Modal show={show} onHide={onClose}>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create Room</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group controlId="formRoomName">
-            <Form.Label>Room Name</Form.Label>
-            <Controller
-              as={Form.Control}
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogTitle>Create a Room</DialogTitle>
+        <DialogContent>
+          <Box display="flex" flexDirection="column">
+            <TextField
+              label="Room Name"
               name="name"
-              type="text"
-              control={control}
-              rules={{ required: 'Required' }}
-              isInvalid={!!errors.name}
+              inputRef={register({
+                required: 'Required',
+              })}
+              variant="outlined"
+              error={!!errors.name}
+              helperText={errors.name
+                ? errors.name.message
+                : 'This can be your team name, business, friend code etc.'}
+              style={{ marginBottom: '20px' }}
             />
-            {errors.name && (
-              <Form.Control.Feedback type="invalid">
-                {errors.name.message}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-          <Form.Group controlId="formRoomLocation">
-            <Form.Label>Location</Form.Label>
-            <Controller
-              as={Form.Control}
-              name="location"
-              type="text"
-              control={control}
-              rules={{ required: 'Required' }}
-              isInvalid={!!errors.location}
-            />
-            {errors.location && (
-              <Form.Control.Feedback type="invalid">
-                {errors.location.message}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-          <Form.Group controlId="formRoomTopics">
-            <Form.Label>Topics</Form.Label>
-            <Controller
-              as={Form.Control}
+            <TextField
+              label="Topics (comma separated)"
               name="topics"
-              type="text"
-              control={control}
-              placeholder="Enter topics (commas)"
-              rules={{ required: 'Required' }}
-              isInvalid={!!errors.topics}
+              inputRef={register({
+                required: 'Required',
+              })}
+              variant="outlined"
+              error={!!errors.topics}
+              helperText={errors.topics
+                ? errors.topics.message
+                : 'Keywords that relate to your room (ie tech, education, fun, music, non-profit)'}
+              style={{ marginBottom: '20px' }}
             />
-            {errors.topics && (
-              <Form.Control.Feedback type="invalid">
-                {errors.topics.message}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-          <Form.Group controlId="formRoomSecret">
-            <Controller
-              as={(
-                <FormControlLabel
-                  control={(<Switch color="secondary" />)}
-                  label="Private Room"
-                />
-              )}
-              name="secret"
-              type="checkbox"
-              defaultValue={false}
-              control={control}
-              isInvalid={!!errors.secret}
+            <TextField
+              label="Location"
+              name="location"
+              inputRef={register({
+                required: 'Required',
+              })}
+              variant="outlined"
+              error={!!errors.location}
+              helperText={errors.location && errors.location.message}
+              style={{ marginBottom: '30px' }}
             />
-            {errors.secret && (
-              <Form.Control.Feedback type="invalid">
-                {errors.secret.message}
-              </Form.Control.Feedback>
-            )}
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onClose}>
+            <FormControl variant="outlined">
+              <InputLabel id="room-visibility-label">Room Visibility</InputLabel>
+              <Select
+                labelId="room-visibility-label"
+                id="room-visibility"
+                defaultValue="public"
+                onChange={(e) => setValue('visibility', e.target.value)}
+                label="Room Visibility"
+              >
+                <MenuItem value="private">Private</MenuItem>
+                <MenuItem value="public">Public</MenuItem>
+              </Select>
+              <FormHelperText>Public rooms can be joined by anyone</FormHelperText>
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button color="secondary" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="primary" type="submit">
+          <Button color="primary" type="submit">
             Create Room
           </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 };
 
