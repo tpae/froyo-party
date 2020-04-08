@@ -1,11 +1,19 @@
 import React from 'react';
 import {
-  Button, Dialog, DialogTitle, DialogContent, DialogActions,
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
 } from '@material-ui/core';
-import { Form } from 'react-bootstrap';
-import { useForm, Controller } from 'react-hook-form';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import { useForm } from 'react-hook-form';
 
 const CreateRoomModal: React.FC<{
   open: boolean;
@@ -14,82 +22,71 @@ const CreateRoomModal: React.FC<{
 }> = ({
   open, onClose, onSubmit,
 }) => {
-  const { handleSubmit, control, errors } = useForm();
+  const {
+    handleSubmit, register, errors, setValue,
+  } = useForm();
+  React.useEffect(() => {
+    register({ name: 'private' }, { required: true });
+  }, [register]);
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <Form onSubmit={handleSubmit(onSubmit)}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>Create a Room</DialogTitle>
         <DialogContent>
-          <Form.Group controlId="formRoomName">
-            <Form.Label>Room Name</Form.Label>
-            <Controller
-              as={Form.Control}
+          <Box display="flex" flexDirection="column">
+            <TextField
+              label="Room Name"
               name="name"
-              type="text"
-              control={control}
-              rules={{ required: 'Required' }}
-              isInvalid={!!errors.name}
+              inputRef={register({
+                required: 'Required',
+              })}
+              variant="outlined"
+              error={!!errors.name}
+              helperText={errors.name
+                ? errors.name.message
+                : 'This can be your team name, business, friend code etc.'}
+              style={{ marginBottom: '20px' }}
             />
-            {errors.name && (
-            <Form.Control.Feedback type="invalid">
-              {errors.name.message}
-            </Form.Control.Feedback>
-            )}
-          </Form.Group>
-          <Form.Group controlId="formRoomLocation">
-            <Form.Label>Location</Form.Label>
-            <Controller
-              as={Form.Control}
-              name="location"
-              type="text"
-              control={control}
-              rules={{ required: 'Required' }}
-              isInvalid={!!errors.location}
-            />
-            {errors.location && (
-            <Form.Control.Feedback type="invalid">
-              {errors.location.message}
-            </Form.Control.Feedback>
-            )}
-          </Form.Group>
-          <Form.Group controlId="formRoomTopics">
-            <Form.Label>Topics</Form.Label>
-            <Controller
-              as={Form.Control}
+            <TextField
+              label="Topics (comma separated)"
               name="topics"
-              type="text"
-              control={control}
-              placeholder="Enter topics (commas)"
-              rules={{ required: 'Required' }}
-              isInvalid={!!errors.topics}
+              inputRef={register({
+                required: 'Required',
+              })}
+              variant="outlined"
+              error={!!errors.topics}
+              helperText={errors.topics
+                ? errors.topics.message
+                : 'Keywords that relate to your room (ie tech, education, fun, music, non-profit)'}
+              style={{ marginBottom: '20px' }}
             />
-            {errors.topics && (
-            <Form.Control.Feedback type="invalid">
-              {errors.topics.message}
-            </Form.Control.Feedback>
-            )}
-          </Form.Group>
-          <Form.Group controlId="formRoomSecret">
-            <Controller
-              as={(
-                <FormControlLabel
-                  control={(<Switch color="secondary" />)}
-                  label="Private Room"
-                />
-              )}
-              name="secret"
-              type="checkbox"
-              defaultValue={false}
-              control={control}
-              isInvalid={!!errors.secret}
+            <TextField
+              label="Location"
+              name="location"
+              inputRef={register({
+                required: 'Required',
+              })}
+              variant="outlined"
+              error={!!errors.location}
+              helperText={errors.location && errors.location.message}
+              style={{ marginBottom: '30px' }}
             />
-            {errors.secret && (
-            <Form.Control.Feedback type="invalid">
-              {errors.secret.message}
-            </Form.Control.Feedback>
-            )}
-          </Form.Group>
-
+            <FormControl variant="outlined">
+              <InputLabel id="room-visibility-label">Room Visibility</InputLabel>
+              <Select
+                labelId="room-visibility-label"
+                id="room-visibility"
+                defaultValue={0}
+                onChange={(e) => setValue('private', !!e.target.value)}
+                label="Room Visibility"
+              >
+                <MenuItem value={1}>Private</MenuItem>
+                <MenuItem value={0}>Public</MenuItem>
+              </Select>
+              <FormHelperText>Public rooms can be joined by anyone</FormHelperText>
+            </FormControl>
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button color="secondary" onClick={onClose}>
@@ -99,7 +96,7 @@ const CreateRoomModal: React.FC<{
             Create Room
           </Button>
         </DialogActions>
-      </Form>
+      </form>
     </Dialog>
   );
 };
