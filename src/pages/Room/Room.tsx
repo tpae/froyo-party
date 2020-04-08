@@ -82,9 +82,9 @@ const Room: React.FC<{}> = () => {
           </Box>
         </AppBar>
         <Box className={styles.participants} paddingTop="75px" margin="0 auto">
-          {stream && <Participant stream={stream} />}
+          {stream && <Participant stream={stream} muted />}
           {Object.keys(calls).filter((uid) => calls[uid].connected).map((uid) => (
-            <Participant key={uid} stream={calls[uid].stream} />
+            <Participant key={uid} stream={calls[uid].stream!} />
           ))}
         </Box>
       </Box>

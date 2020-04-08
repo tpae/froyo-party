@@ -1,26 +1,3 @@
-$theme-colors: (
-    "primary": #FC5185,
-    "secondary": #54C2F1
-);
-
-@import "~bootstrap/scss/bootstrap";
-
 body {
   font-family: 'Roboto', sans-serif;
-}
-
-.card-header {
-  background-color: #54C2F1;
-  color: #fff;
-}
-
-.table {
-  thead {
-    background-color: #54C2F1;
-    color: #fff;
-  }
-  .MuiAvatar-root {
-    width: 26px;
-    height: 26px;
-  }
 }
