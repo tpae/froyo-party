@@ -2,12 +2,14 @@ import React from 'react';
 import {
   AppBar, Button, Box, Container, IconButton, Typography,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import AppLayout from '../../components/AppLayout';
 import Logo from '../../components/Logo';
 import { signInWithFacebook, signInWithGoogle } from '../../services/firebase';
 import styles from './Onboarding.module.scss';
 
 const Onboarding: React.FC<{}> = () => {
+  const history = useHistory();
   const handleSignInFacebook = React.useCallback(() => {
     signInWithFacebook();
   }, []);
@@ -15,6 +17,10 @@ const Onboarding: React.FC<{}> = () => {
   const handleSignInGoogle = React.useCallback(() => {
     signInWithGoogle();
   }, []);
+
+  const handleSignUpWithEmail = React.useCallback(() => {
+    history.push('/signup');
+  }, [history]);
 
   return (
     <AppLayout hasBackground>
@@ -42,14 +48,15 @@ const Onboarding: React.FC<{}> = () => {
               with students, or catch up with friends. Social distancing has never
               been so sweet.
             </Typography>
-            {/* <Button
+            <Button
               variant="contained"
+              onClick={handleSignUpWithEmail}
               fullWidth
               color="secondary"
               style={{ margin: '5px' }}
             >
-              Sign up with Email or SMS
-            </Button> */}
+              Sign up with Email
+            </Button>
             <Button
               variant="contained"
               onClick={handleSignInFacebook}

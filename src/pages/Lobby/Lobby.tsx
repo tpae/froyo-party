@@ -10,15 +10,22 @@ import AllRooms from '../../components/AllRooms';
 import Logo from '../../components/Logo';
 import CreateRoomModal from '../../components/CreateRoomModal';
 import {
-  useActiveRooms, createRoom, signOut,
+  useActiveRooms, createRoom, signOut, useProfile,
 } from '../../services/firebase';
 
 const Lobby: React.FC<{}> = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
+  const [profile, loading] = useProfile();
   const [showCreateRoom, setShowCreateRoom] = React.useState<boolean>(false);
   const [activeRooms, activeRoomsLoading] = useActiveRooms();
+
+  React.useEffect(() => {
+    if (!loading && !profile!.exists) {
+      history.push('/profile');
+    }
+  }, [profile, loading, history]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

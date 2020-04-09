@@ -1,10 +1,11 @@
+import { useDocument } from 'react-firebase-hooks/firestore';
 import firebase from './config';
 
 export interface IUser {
   uid: string;
   email?: string;
   displayName: string;
-  picture?: string;
+  picture?: string | null;
   updatedAt: firebase.firestore.FieldValue;
 }
 
@@ -21,6 +22,16 @@ export const getProfile = (id: string) => db.collection('users').doc(id).get();
 
 export const getCurrentProfile = () => firebase.auth().currentUser!;
 
+export const useProfile = () => {
+  const { currentUser } = firebase.auth();
+  return useDocument(
+    db.collection('users').doc(currentUser!.uid),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    },
+  );
+};
+
 export const setProfile = async ({
   email, displayName, picture,
 }) => {
@@ -36,6 +47,52 @@ export const setProfile = async ({
     return db.collection('users').doc(currentUser.uid).set(user);
   }
   return Promise.reject(new Error('You are not signed in.'));
+};
+
+export const updateProfile = async ({
+  displayName,
+}) => {
+  const { currentUser } = firebase.auth();
+  if (currentUser) {
+    const user: IUser = {
+      uid: currentUser.uid,
+      email: currentUser.email!,
+      displayName,
+      picture: null,
+      updatedAt: timestamp,
+    };
+    return db.collection('users').doc(currentUser.uid).set(user);
+  }
+  return Promise.reject(new Error('You are not signed in.'));
+};
+
+export const signInWithEmail = async ({ email }) => {
+  try {
+    await firebase.auth().sendSignInLinkToEmail(email, {
+      url: window.location.href,
+      handleCodeInApp: true,
+    });
+    window.localStorage.setItem('emailForSignIn', email);
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+export const confirmSignInWithEmail = async () => {
+  try {
+    if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+      let email = window.localStorage.getItem('emailForSignIn');
+      if (!email) {
+        email = window.prompt('Please provide your email for confirmation');
+      }
+      await firebase.auth().signInWithEmailLink(email!, window.location.href);
+      window.localStorage.removeItem('emailForSignIn');
+    }
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 };
 
 export const signInWithFacebook = async () => {
