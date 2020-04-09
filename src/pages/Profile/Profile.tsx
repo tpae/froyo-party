@@ -2,7 +2,7 @@ import React from 'react';
 import {
   AppBar, Button, Box, Container, IconButton, Typography, TextField,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import AppLayout from '../../components/AppLayout';
@@ -11,6 +11,8 @@ import { updateProfile } from '../../services/firebase';
 
 const Profile: React.FC<{}> = () => {
   const history = useHistory();
+  const location = useLocation();
+  const { from } = location.state || { from: { pathname: '/lobby' } };
   const {
     handleSubmit, register, errors,
   } = useForm();
@@ -22,7 +24,7 @@ const Profile: React.FC<{}> = () => {
         'Your profile has been updated.',
         'success',
       );
-      history.push('/lobby');
+      history.push(from);
     } catch (err) {
       Swal.fire(
         'Error!',
