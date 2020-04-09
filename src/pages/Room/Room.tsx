@@ -68,7 +68,7 @@ const Room: React.FC<{}> = () => {
                 <Logo />
               </IconButton>
               <Tabs value={0}>
-                <Tab label="Froyo Party" />
+                <Tab label={room.name} />
               </Tabs>
             </Box>
             <Toolbar variant="dense">
