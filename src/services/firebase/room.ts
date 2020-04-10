@@ -75,7 +75,6 @@ export const useMyRooms = (): [IRoom[], boolean] => {
   return [rooms, loading];
 };
 
-
 export const useRoom = (roomId: string): [IRoom, boolean] => {
   const [value, loading] = useDocument(
     db.collection('rooms').doc(roomId),
@@ -118,8 +117,6 @@ export const getRandomRoomByTopic = async ({
   });
   return room;
 };
-
-export const getToken = firebase.functions().httpsCallable('getToken');
 
 export const usePresence = (roomId: string, userId: string, peer: Peer) => {
   useEffect(() => {

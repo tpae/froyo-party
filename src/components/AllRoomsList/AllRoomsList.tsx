@@ -7,7 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { IRoom } from '../../services/firebase';
 
-const AllRooms: React.FC<{
+const AllRoomsList: React.FC<{
   rooms: IRoom[];
   onJoinRoom: (roomId: string) => void;
 }> = ({
@@ -26,7 +26,7 @@ const AllRooms: React.FC<{
         <TableHead>
           <TableRow>
             <TableCell>Room Name</TableCell>
-            <TableCell>Tags</TableCell>
+            <TableCell>Topics</TableCell>
             <TableCell>People</TableCell>
             <TableCell>Location</TableCell>
           </TableRow>
@@ -46,4 +46,4 @@ const AllRooms: React.FC<{
   );
 };
 
-export default AllRooms;
+export default AllRoomsList;

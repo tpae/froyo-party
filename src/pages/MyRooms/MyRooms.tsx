@@ -1,8 +1,8 @@
 import React from 'react';
-import { Spinner } from 'react-bootstrap';
+import { Box, CircularProgress } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import AppLayout from '../../components/AppLayout';
-import AllRooms from '../../components/AllRooms';
+import MyRoomsList from '../../components/MyRoomsList';
 import { useMyRooms } from '../../services/firebase';
 
 const MyRooms: React.FC<{}> = () => {
@@ -16,11 +16,11 @@ const MyRooms: React.FC<{}> = () => {
   return (
     <AppLayout currentIndex={0}>
       {myRoomsLoading ? (
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <Box height="50vh" display="flex" alignItems="center" justifyContent="center">
+          <CircularProgress size={50} />
+        </Box>
       ) : (
-        <AllRooms
+        <MyRoomsList
           rooms={myRooms}
           onJoinRoom={handleJoinRoom}
         />
