@@ -1,12 +1,11 @@
 import React from 'react';
 import {
-  AppBar, Tabs, Tab, Toolbar, Box, Button, IconButton,
+  Container, AppBar, Tabs, Tab, Toolbar, Box, Button, IconButton,
 } from '@material-ui/core';
 import { Mic, MicOff } from '@material-ui/icons';
 import { useHistory, useParams } from 'react-router-dom';
 import useUserMedia from 'react-use-user-media';
 import Peer from 'peerjs';
-import AppLayout from '../../components/AppLayout';
 import Participant from '../../components/Participant';
 import Logo from '../../components/Logo';
 import usePeerCalls from '../../hooks/usePeerCalls';
@@ -59,7 +58,13 @@ const Room: React.FC<{}> = () => {
   }, [mute, stream, setMute]);
 
   return (
-    <AppLayout>
+    <Container
+      maxWidth={false}
+      disableGutters
+      style={{
+        height: '100%',
+      }}
+    >
       <Box className={styles.videoPanel}>
         <AppBar>
           <Box display="flex" flexDirection="row" justifyContent="space-between">
@@ -88,7 +93,7 @@ const Room: React.FC<{}> = () => {
           ))}
         </Box>
       </Box>
-    </AppLayout>
+    </Container>
   );
 };
 

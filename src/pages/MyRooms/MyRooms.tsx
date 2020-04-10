@@ -3,25 +3,25 @@ import { Spinner } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import AppLayout from '../../components/AppLayout';
 import AllRooms from '../../components/AllRooms';
-import { useActiveRooms } from '../../services/firebase';
+import { useMyRooms } from '../../services/firebase';
 
-const Lobby: React.FC<{}> = () => {
+const MyRooms: React.FC<{}> = () => {
   const history = useHistory();
-  const [activeRooms, activeRoomsLoading] = useActiveRooms();
+  const [myRooms, myRoomsLoading] = useMyRooms();
 
   const handleJoinRoom = React.useCallback((roomId: string) => {
     history.push(`/room/${roomId}`);
   }, [history]);
 
   return (
-    <AppLayout currentIndex={1}>
-      {activeRoomsLoading ? (
+    <AppLayout currentIndex={0}>
+      {myRoomsLoading ? (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
       ) : (
         <AllRooms
-          rooms={activeRooms}
+          rooms={myRooms}
           onJoinRoom={handleJoinRoom}
         />
       )}
@@ -29,4 +29,4 @@ const Lobby: React.FC<{}> = () => {
   );
 };
 
-export default Lobby;
+export default MyRooms;

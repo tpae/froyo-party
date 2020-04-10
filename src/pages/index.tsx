@@ -6,6 +6,7 @@ import firebase from 'firebase/app';
 import PrivateRoute from '../components/PrivateRoute';
 import AuthRoute from '../components/AuthRoute';
 import Lobby from './Lobby';
+import MyRooms from './MyRooms';
 import Room from './Room';
 import Onboarding from './Onboarding';
 import SignUp from './SignUp';
@@ -20,7 +21,7 @@ const Routes: React.FC<{}> = () => {
     <Switch>
       <PrivateRoute isAuthenticated={!!user} exact path="/profile" component={Profile} />
       <PrivateRoute isAuthenticated={!!user} exact path="/lobby" component={Lobby} />
-      <PrivateRoute isAuthenticated={!!user} exact path="/topic/:topic" component={Lobby} />
+      <PrivateRoute isAuthenticated={!!user} exact path="/rooms" component={MyRooms} />
       <PrivateRoute isAuthenticated={!!user} exact path="/room/:roomId" component={Room} />
       <AuthRoute isAuthenticated={!!user} exact path="/login" component={Onboarding} />
       <AuthRoute isAuthenticated={!!user} exact path="/signup" component={SignUp} />

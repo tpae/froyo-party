@@ -62,6 +62,20 @@ export const useActiveRooms = (): [IRoom[], boolean] => {
   return [rooms, loading];
 };
 
+export const useMyRooms = (): [IRoom[], boolean] => {
+  const { currentUser } = firebase.auth();
+  const [value, loading] = useCollection(
+    db.collection('rooms')
+      .where('owner', '==', currentUser!.uid),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    },
+  );
+  const rooms = value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
+  return [rooms, loading];
+};
+
+
 export const useRoom = (roomId: string): [IRoom, boolean] => {
   const [value, loading] = useDocument(
     db.collection('rooms').doc(roomId),
