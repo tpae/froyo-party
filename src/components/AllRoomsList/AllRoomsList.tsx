@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -5,6 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { Link } from '@material-ui/core';
 import { IRoom } from '../../services/firebase';
 
 const AllRoomsList: React.FC<{
@@ -13,7 +15,7 @@ const AllRoomsList: React.FC<{
 }> = ({
   rooms, onJoinRoom,
 }) => {
-  const handleJoinRoom = React.useCallback((roomId?: string) => (event: React.MouseEvent) => {
+  const handleJoinRoom = React.useCallback((event: React.MouseEvent, roomId?: string) => {
     event.preventDefault();
     if (roomId) {
       onJoinRoom(roomId);
@@ -26,18 +28,22 @@ const AllRoomsList: React.FC<{
         <TableHead>
           <TableRow>
             <TableCell>Room Name</TableCell>
-            <TableCell>Topics</TableCell>
-            <TableCell>People</TableCell>
-            <TableCell>Location</TableCell>
+            <TableCell align="right">Topics</TableCell>
+            <TableCell align="right">People</TableCell>
+            <TableCell align="right">Location</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rooms.map((room) => (
-            <TableRow key={room.id} onClick={handleJoinRoom(room.id)} hover>
-              <TableCell>{room.name}</TableCell>
-              <TableCell>{room.topics.join(', ')}</TableCell>
-              <TableCell>{Object.keys(room.peers).length}</TableCell>
-              <TableCell>{room.location}</TableCell>
+            <TableRow key={room.id} hover>
+              <TableCell>
+                <Link href="#" onClick={(e) => handleJoinRoom(e, room.id)}>
+                  {room.name}
+                </Link>
+              </TableCell>
+              <TableCell align="right">{room.topics.join(', ')}</TableCell>
+              <TableCell align="right">{Object.keys(room.peers).length}</TableCell>
+              <TableCell align="right">{room.location}</TableCell>
             </TableRow>
           ))}
         </TableBody>

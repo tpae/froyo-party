@@ -47,6 +47,22 @@ export const createRoom = async ({
   return Promise.reject(new Error('You are not signed in.'));
 };
 
+export const deleteRoom = (roomId: string) => {
+  const { currentUser } = firebase.auth();
+  if (currentUser) {
+    return db.collection('rooms').doc(roomId).delete();
+  }
+  return Promise.reject(new Error('You are not signed in.'));
+};
+
+export const updateRoom = (roomId: string, roomValues: any) => {
+  const { currentUser } = firebase.auth();
+  if (currentUser) {
+    return db.collection('rooms').doc(roomId).update(roomValues);
+  }
+  return Promise.reject(new Error('You are not signed in.'));
+};
+
 export const getRoom = (roomId: string) => db.collection('rooms').doc(roomId).get();
 
 export const useActiveRooms = (): [IRoom[], boolean] => {
