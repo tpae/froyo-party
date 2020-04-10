@@ -47,6 +47,22 @@ export const createRoom = async ({
   return Promise.reject(new Error('You are not signed in.'));
 };
 
+export const deleteRoom = (roomId: string) => {
+  const { currentUser } = firebase.auth();
+  if (currentUser) {
+    return db.collection('rooms').doc(roomId).delete();
+  }
+  return Promise.reject(new Error('You are not signed in.'));
+};
+
+export const updateRoom = (roomId: string, roomValues: any) => {
+  const { currentUser } = firebase.auth();
+  if (currentUser) {
+    return db.collection('rooms').doc(roomId).update(roomValues);
+  }
+  return Promise.reject(new Error('You are not signed in.'));
+};
+
 export const getRoom = (roomId: string) => db.collection('rooms').doc(roomId).get();
 
 export const useActiveRooms = (): [IRoom[], boolean] => {
@@ -74,7 +90,6 @@ export const useMyRooms = (): [IRoom[], boolean] => {
   const rooms = value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
   return [rooms, loading];
 };
-
 
 export const useRoom = (roomId: string): [IRoom, boolean] => {
   const [value, loading] = useDocument(
@@ -118,8 +133,6 @@ export const getRandomRoomByTopic = async ({
   });
   return room;
 };
-
-export const getToken = firebase.functions().httpsCallable('getToken');
 
 export const usePresence = (roomId: string, userId: string, peer: Peer) => {
   useEffect(() => {

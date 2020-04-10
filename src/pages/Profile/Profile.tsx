@@ -31,7 +31,7 @@ const Profile: React.FC<{}> = () => {
         'error',
       );
     }
-  }, [history]);
+  }, [history, from]);
 
   return (
     <AppLayout>

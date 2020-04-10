@@ -15,16 +15,18 @@ import {
 } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 
-const CreateRoomModal: React.FC<{
+const RoomFormModal: React.FC<{
   open: boolean;
   onClose: () => void;
   onSubmit: (values: any) => void;
+  defaultValues?: any;
 }> = ({
-  open, onClose, onSubmit,
+  open, onClose, onSubmit, defaultValues,
 }) => {
   const {
     handleSubmit, register, errors, setValue,
-  } = useForm();
+  } = useForm({ defaultValues });
+
   React.useEffect(() => {
     register({ name: 'visibility' }, { required: true });
     setValue('visibility', 'public');
@@ -33,7 +35,7 @@ const CreateRoomModal: React.FC<{
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Create a Room</DialogTitle>
+        <DialogTitle>{defaultValues ? 'Edit Room' : 'Create a Room'}</DialogTitle>
         <DialogContent>
           <Box display="flex" flexDirection="column">
             <TextField
@@ -78,7 +80,7 @@ const CreateRoomModal: React.FC<{
               <Select
                 labelId="room-visibility-label"
                 id="room-visibility"
-                defaultValue="public"
+                defaultValue={defaultValues && defaultValues.secret ? 'private' : 'public' || 'public'}
                 onChange={(e) => setValue('visibility', e.target.value)}
                 label="Room Visibility"
               >
@@ -94,7 +96,7 @@ const CreateRoomModal: React.FC<{
             Cancel
           </Button>
           <Button color="primary" type="submit">
-            Create Room
+            {defaultValues ? 'Edit Room' : 'Create Room'}
           </Button>
         </DialogActions>
       </form>
@@ -102,4 +104,4 @@ const CreateRoomModal: React.FC<{
   );
 };
 
-export default CreateRoomModal;
+export default RoomFormModal;

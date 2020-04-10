@@ -5,7 +5,7 @@ import {
 import { MoreVert } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import Logo from '../../components/Logo';
-import CreateRoomModal from '../../components/CreateRoomModal';
+import RoomFormModal from '../RoomFormModal';
 import {
   createRoom, signOut, useProfile,
 } from '../../services/firebase';
@@ -37,7 +37,7 @@ const AppLayout: React.FC<{
     const room = await createRoom({
       ...values,
       topics: values.topics.split(','),
-      private: values.visibility === 'private',
+      secret: values.visibility === 'private',
     });
     history.push(`/room/${room.id}`);
   }, [history]);
@@ -92,7 +92,7 @@ const AppLayout: React.FC<{
       </AppBar>
       <Box paddingTop="75px" paddingLeft="15px" paddingRight="15px" margin="0 auto">
         {children}
-        <CreateRoomModal
+        <RoomFormModal
           open={showCreateRoom}
           onClose={handleCloseCreateRoomModal}
           onSubmit={handleCreateRoom}
