@@ -15,29 +15,36 @@ const MyRoomsList: React.FC<{
   onJoinRoom: (roomId: string) => void;
   onEditRoom: (roomId: string) => void;
   onDeleteRoom: (roomId: string) => void;
-}> = ({
-  rooms, onJoinRoom, onEditRoom, onDeleteRoom,
-}) => {
-  const handleJoinRoom = React.useCallback((event: React.MouseEvent, roomId?: string) => {
-    event.preventDefault();
-    if (roomId) {
-      onJoinRoom(roomId);
-    }
-  }, [onJoinRoom]);
+}> = ({ rooms, onJoinRoom, onEditRoom, onDeleteRoom }) => {
+  const handleJoinRoom = React.useCallback(
+    (event: React.MouseEvent, roomId?: string) => {
+      event.preventDefault();
+      if (roomId) {
+        onJoinRoom(roomId);
+      }
+    },
+    [onJoinRoom]
+  );
 
-  const handleEditRoom = React.useCallback((event: React.MouseEvent, roomId?: string) => {
-    event.preventDefault();
-    if (roomId) {
-      onEditRoom(roomId);
-    }
-  }, [onEditRoom]);
+  const handleEditRoom = React.useCallback(
+    (event: React.MouseEvent, roomId?: string) => {
+      event.preventDefault();
+      if (roomId) {
+        onEditRoom(roomId);
+      }
+    },
+    [onEditRoom]
+  );
 
-  const handleDeleteRoom = React.useCallback((event: React.MouseEvent, roomId?: string) => {
-    event.preventDefault();
-    if (roomId) {
-      onDeleteRoom(roomId);
-    }
-  }, [onDeleteRoom]);
+  const handleDeleteRoom = React.useCallback(
+    (event: React.MouseEvent, roomId?: string) => {
+      event.preventDefault();
+      if (roomId) {
+        onDeleteRoom(roomId);
+      }
+    },
+    [onDeleteRoom]
+  );
 
   return (
     <TableContainer>
@@ -60,7 +67,9 @@ const MyRoomsList: React.FC<{
                 </Link>
               </TableCell>
               <TableCell align="right">{room.topics.join(', ')}</TableCell>
-              <TableCell align="right">{Object.keys(room.peers).length}</TableCell>
+              <TableCell align="right">
+                {Object.keys(room.peers).length}
+              </TableCell>
               <TableCell align="right">{room.location}</TableCell>
               <TableCell align="right">
                 <MyRoomsMenu

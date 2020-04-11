@@ -12,15 +12,16 @@ import { IRoom } from '../../services/firebase';
 const AllRoomsList: React.FC<{
   rooms: IRoom[];
   onJoinRoom: (roomId: string) => void;
-}> = ({
-  rooms, onJoinRoom,
-}) => {
-  const handleJoinRoom = React.useCallback((event: React.MouseEvent, roomId?: string) => {
-    event.preventDefault();
-    if (roomId) {
-      onJoinRoom(roomId);
-    }
-  }, [onJoinRoom]);
+}> = ({ rooms, onJoinRoom }) => {
+  const handleJoinRoom = React.useCallback(
+    (event: React.MouseEvent, roomId?: string) => {
+      event.preventDefault();
+      if (roomId) {
+        onJoinRoom(roomId);
+      }
+    },
+    [onJoinRoom]
+  );
 
   return (
     <TableContainer>
@@ -42,7 +43,9 @@ const AllRoomsList: React.FC<{
                 </Link>
               </TableCell>
               <TableCell align="right">{room.topics.join(', ')}</TableCell>
-              <TableCell align="right">{Object.keys(room.peers).length}</TableCell>
+              <TableCell align="right">
+                {Object.keys(room.peers).length}
+              </TableCell>
               <TableCell align="right">{room.location}</TableCell>
             </TableRow>
           ))}

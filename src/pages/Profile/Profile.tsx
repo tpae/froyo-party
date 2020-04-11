@@ -1,6 +1,10 @@
 import React from 'react';
 import {
-  Button, Box, Container, Typography, TextField,
+  Button,
+  Box,
+  Container,
+  Typography,
+  TextField,
 } from '@material-ui/core';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -12,34 +16,33 @@ const Profile: React.FC<{}> = () => {
   const history = useHistory();
   const location = useLocation();
   const { from } = location.state || { from: { pathname: '/lobby' } };
-  const {
-    handleSubmit, register, errors,
-  } = useForm();
-  const onSubmit = React.useCallback(async (values) => {
-    try {
-      await updateProfile(values);
-      Swal.fire(
-        'Success!',
-        'Your profile has been updated.',
-        'success',
-      );
-      history.push(from);
-    } catch (err) {
-      Swal.fire(
-        'Error!',
-        err.message,
-        'error',
-      );
-    }
-  }, [history, from]);
+  const { handleSubmit, register, errors } = useForm();
+  const onSubmit = React.useCallback(
+    async (values) => {
+      try {
+        await updateProfile(values);
+        Swal.fire('Success!', 'Your profile has been updated.', 'success');
+        history.push(from);
+      } catch (err) {
+        Swal.fire('Error!', err.message, 'error');
+      }
+    },
+    [history, from]
+  );
 
   return (
     <AppLayout>
       <Container maxWidth="sm">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            flexDirection="column">
             <img src="/froyos.png" alt="Froyos" style={{ width: '200px' }} />
-            <Typography variant="h4" style={{ margin: '15px' }}>What’s your name?</Typography>
+            <Typography variant="h4" style={{ margin: '15px' }}>
+              What’s your name?
+            </Typography>
             <Typography align="center" style={{ marginBottom: '20px' }}>
               To complete the sign up process, please enter your full name.
             </Typography>
@@ -60,8 +63,7 @@ const Profile: React.FC<{}> = () => {
               variant="contained"
               fullWidth
               color="secondary"
-              style={{ margin: '5px' }}
-            >
+              style={{ margin: '5px' }}>
               Continue
             </Button>
           </Box>
