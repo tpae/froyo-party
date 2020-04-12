@@ -1,6 +1,7 @@
 import React from 'react';
-import Peer, { DataConnection } from 'peerjs';
+import { DataConnection } from 'peerjs';
 import { IPeer } from '../services/firebase';
+import peer from '../services/peer';
 import usePrevious from './usePrevious';
 
 interface IPeerStateData {
@@ -17,19 +18,18 @@ interface IPeerState {
 function usePeerState({
   peers,
   userId,
-  peer,
   initialState,
   loading,
 }: {
   peers: Record<string, IPeer>;
   userId: string;
-  peer: Peer;
   initialState: IPeerStateData;
   loading: boolean;
 }): [
   Record<string, IPeerState>,
   React.Dispatch<React.SetStateAction<IPeerStateData>>
 ] {
+  const [initialized, setInitialized] = React.useState<boolean>(false);
   const [selfState, setSelfState] = React.useState<IPeerStateData>(
     initialState
   );
@@ -39,7 +39,47 @@ function usePeerState({
   const prevSelfState = usePrevious<IPeerStateData>(selfState);
 
   React.useEffect(() => {
-    if (peer.id && peers && userId && !loading) {
+    if (!loading) {
+      peer.on('connection', (connection: DataConnection) => {
+        const { userId: peerUserId } = connection.metadata;
+
+        connection.on('open', () => {
+          connection.on('data', (data) => {
+            setPeerState((prevState) => ({
+              ...prevState,
+              [peerUserId]: {
+                connection,
+                connected: true,
+                data,
+              },
+            }));
+          });
+
+          // on connect, send self state
+          connection.send(selfState);
+        });
+
+        connection.on('close', () => {
+          setPeerState((prevState) => {
+            const { [peerUserId]: omitted, ...rest } = prevState;
+            return rest;
+          });
+        });
+
+        // if connection has an error
+        connection.on('error', (err) => {
+          console.log(err);
+          setPeerState((prevState) => {
+            const { [peerUserId]: omitted, ...rest } = prevState;
+            return rest;
+          });
+        });
+      });
+    }
+  }, [loading, selfState]);
+
+  React.useEffect(() => {
+    if (peers && userId && !loading) {
       Object.keys(peers).forEach((peerUserId) => {
         if (!peerState[peerUserId] && peerUserId !== userId) {
           const connection = peer.connect(peers[peerUserId].peerId, {
@@ -60,7 +100,6 @@ function usePeerState({
             }));
 
             connection.on('data', (data) => {
-              console.log('caller received data', data);
               setPeerState((prevState) => ({
                 ...prevState,
                 [peerUserId]: {
@@ -102,43 +141,7 @@ function usePeerState({
         }
       });
     }
-  }, [peer, peers, userId, loading, selfState, peerState, setPeerState]);
-
-  React.useEffect(() => {
-    if (peer.id && !loading) {
-      peer.on('connection', (connection: DataConnection) => {
-        const { userId: peerUserId } = connection.metadata;
-
-        connection.on('data', (data) => {
-          console.log('receiver received data', data);
-          setPeerState((prevState) => ({
-            ...prevState,
-            [peerUserId]: {
-              connection,
-              connected: true,
-              data,
-            },
-          }));
-        });
-
-        connection.on('close', () => {
-          setPeerState((prevState) => {
-            const { [peerUserId]: omitted, ...rest } = prevState;
-            return rest;
-          });
-        });
-
-        // if connection has an error
-        connection.on('error', (err) => {
-          console.log(err);
-          setPeerState((prevState) => {
-            const { [peerUserId]: omitted, ...rest } = prevState;
-            return rest;
-          });
-        });
-      });
-    }
-  }, [peer, loading]);
+  }, [peers, userId, loading, selfState, peerState, setPeerState]);
 
   React.useEffect(() => {
     if (prevSelfState !== selfState) {
@@ -155,6 +158,7 @@ function usePeerState({
     }
   }, [selfState, prevSelfState, peerState]);
 
+  // close all connections
   React.useEffect(
     () => () => {
       Object.keys(peer.connections).forEach((peerUserId) => {
@@ -165,7 +169,7 @@ function usePeerState({
           });
       });
     },
-    [peer]
+    []
   );
 
   return [peerState, setSelfState];

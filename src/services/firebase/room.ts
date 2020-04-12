@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
-import Peer from 'peerjs';
 import { IUser } from './auth';
 import firebase from './config';
+import peer from '../peer';
 
 const db = firebase.firestore();
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
@@ -135,7 +135,7 @@ export const getRandomRoomByTopic = async ({
   return room;
 };
 
-export const usePresence = (roomId: string, userId: string, peer: Peer) => {
+export const usePresence = (roomId: string, userId: string) => {
   useEffect(() => {
     const onlineRef = firebase.database().ref('.info/connected');
     const roomRef = firebase.database().ref(`/rooms/${roomId}/${userId}`);

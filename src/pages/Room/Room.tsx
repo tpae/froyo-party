@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import { Mic, MicOff } from '@material-ui/icons';
 import { useHistory, useParams } from 'react-router-dom';
-import Peer from 'peerjs';
 import Participant from '../../components/Participant';
 import Logo from '../../components/Logo';
 import usePeerCalls from '../../hooks/usePeerCalls';
@@ -24,17 +23,10 @@ import {
 } from '../../services/firebase';
 import styles from './Room.module.scss';
 
-const { REACT_APP_PEER_HOST } = process.env;
 const constraints = {
   video: { aspectRatio: 16 / 9, facingMode: 'user' },
   audio: true,
 };
-
-const peer = new Peer(undefined, {
-  host: REACT_APP_PEER_HOST,
-  secure: true,
-  debug: 3,
-});
 
 const Room: React.FC<{}> = () => {
   const { roomId } = useParams();
@@ -43,12 +35,11 @@ const Room: React.FC<{}> = () => {
   const profile = getCurrentProfile();
   const { state, stream } = useUserMedia(constraints);
   const [mute, setMute] = React.useState<boolean>(false);
-  usePresence(roomId, profile.uid, peer);
+  usePresence(roomId, profile.uid);
   const [peerState, setSelfState] = usePeerState({
     peers: room.peers,
     loading,
     userId: profile.uid,
-    peer,
     initialState: {
       hasAudio: !mute,
       hasVideo: true,
@@ -68,7 +59,7 @@ const Room: React.FC<{}> = () => {
       event.preventDefault();
       history.push('/lobby');
     },
-    [history, peer]
+    [history]
   );
 
   const handleMic = React.useCallback(
