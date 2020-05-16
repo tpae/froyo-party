@@ -1,20 +1,28 @@
 import React from 'react';
 import {
-  Container, AppBar, Tabs, Tab, Toolbar, Box, Button, IconButton,
+  Container,
+  AppBar,
+  Tabs,
+  Tab,
+  Toolbar,
+  Box,
+  Button,
+  IconButton,
 } from '@material-ui/core';
 import { Mic, MicOff } from '@material-ui/icons';
 import { useHistory, useParams } from 'react-router-dom';
-import useUserMedia from 'react-use-user-media';
-import Peer from 'peerjs';
 import Participant from '../../components/Participant';
 import Logo from '../../components/Logo';
 import usePeerCalls from '../../hooks/usePeerCalls';
+import usePeerState from '../../hooks/usePeerState';
+import useUserMedia from '../../hooks/useUserMedia';
 import {
-  useRoom, getCurrentProfile, usePresence,
+  useRoom,
+  getCurrentProfile,
+  usePresence,
 } from '../../services/firebase';
 import styles from './Room.module.scss';
 
-const { REACT_APP_PEER_HOST } = process.env;
 const constraints = {
   video: { aspectRatio: 16 / 9, facingMode: 'user' },
   audio: true,
@@ -27,35 +35,49 @@ const Room: React.FC<{}> = () => {
   const profile = getCurrentProfile();
   const { state, stream } = useUserMedia(constraints);
   const [mute, setMute] = React.useState<boolean>(false);
-  const peerRef = React.useRef<Peer>(new Peer(profile.uid, {
-    host: REACT_APP_PEER_HOST,
-    secure: true,
-  }));
-  const peer = peerRef.current;
-  usePresence(roomId, profile.uid, peer);
-
-  const calls = usePeerCalls({
+  usePresence(roomId, profile.uid);
+  const [peerState, setSelfState] = usePeerState({
     peers: room.peers,
     loading,
     userId: profile.uid,
-    peer,
-    sourceState: state,
-    sourceStream: stream,
+    initialState: {
+      hasAudio: !mute,
+      hasVideo: true,
+    },
   });
+  // const calls = usePeerCalls({
+  //   peers: room.peers,
+  //   loading,
+  //   userId: profile.uid,
+  //   peer,
+  //   sourceState: state,
+  //   sourceStream: stream,
+  // });
 
-  const handleLeaveRoom = React.useCallback(async (event: React.MouseEvent) => {
-    event.preventDefault();
-    peer.destroy();
-    history.push('/lobby');
-  }, [history, peer]);
+  const handleLeaveRoom = React.useCallback(
+    async (event: React.MouseEvent) => {
+      event.preventDefault();
+      history.push('/lobby');
+    },
+    [history]
+  );
 
-  const handleMic = React.useCallback(async (event: React.MouseEvent) => {
-    event.preventDefault();
-    if (stream) {
-      stream.getAudioTracks()[0].enabled = mute;
-      setMute((prevMute) => !prevMute);
-    }
-  }, [mute, stream, setMute]);
+  const handleMic = React.useCallback(
+    async (event: React.MouseEvent) => {
+      event.preventDefault();
+      if (stream) {
+        stream.getAudioTracks()[0].enabled = mute;
+        setMute((prevMute) => !prevMute);
+        setSelfState((prevState) => ({
+          ...prevState,
+          hasAudio: !prevState.hasAudio,
+        }));
+      }
+    },
+    [mute, stream, setMute, setSelfState]
+  );
+
+  console.log(peerState);
 
   return (
     <Container
@@ -63,11 +85,13 @@ const Room: React.FC<{}> = () => {
       disableGutters
       style={{
         height: '100%',
-      }}
-    >
+      }}>
       <Box className={styles.videoPanel}>
         <AppBar>
-          <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between">
             <Box display="flex" flexDirection="row">
               <IconButton size="small">
                 <Logo />
@@ -77,20 +101,28 @@ const Room: React.FC<{}> = () => {
               </Tabs>
             </Box>
             <Toolbar variant="dense">
-              <IconButton size="small" style={{ color: 'white' }} onClick={handleMic}>
+              <IconButton
+                size="small"
+                style={{ color: 'white' }}
+                onClick={handleMic}>
                 {mute ? <MicOff /> : <Mic />}
               </IconButton>
             </Toolbar>
             <Toolbar variant="dense">
-              <Button onClick={handleLeaveRoom} variant="contained" color="secondary">Leave Room</Button>
+              <Button
+                onClick={handleLeaveRoom}
+                variant="contained"
+                color="secondary">
+                Leave Room
+              </Button>
             </Toolbar>
           </Box>
         </AppBar>
         <Box className={styles.participants} paddingTop="75px" margin="0 auto">
           {stream && <Participant stream={stream} muted />}
-          {Object.keys(calls).filter((uid) => calls[uid].connected).map((uid) => (
+          {/* {Object.keys(calls).filter((uid) => calls[uid].connected).map((uid) => (
             <Participant key={uid} stream={calls[uid].stream!} />
-          ))}
+          ))} */}
         </Box>
       </Box>
     </Container>

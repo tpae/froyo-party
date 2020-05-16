@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
-import Peer from 'peerjs';
 import { IUser } from './auth';
 import firebase from './config';
+import peer from '../peer';
 
 const db = firebase.firestore();
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
@@ -27,7 +27,10 @@ export interface IPeer {
 }
 
 export const createRoom = async ({
-  name, topics, location, secret = false,
+  name,
+  topics,
+  location,
+  secret = false,
 }) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
@@ -63,51 +66,46 @@ export const updateRoom = (roomId: string, roomValues: any) => {
   return Promise.reject(new Error('You are not signed in.'));
 };
 
-export const getRoom = (roomId: string) => db.collection('rooms').doc(roomId).get();
+export const getRoom = (roomId: string) =>
+  db.collection('rooms').doc(roomId).get();
 
 export const useActiveRooms = (): [IRoom[], boolean] => {
   const [value, loading] = useCollection(
-    db.collection('rooms')
+    db
+      .collection('rooms')
       .where('active', '==', true)
       .where('secret', '==', false),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
-    },
+    }
   );
-  const rooms = value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
+  const rooms =
+    value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
   return [rooms, loading];
 };
 
 export const useMyRooms = (): [IRoom[], boolean] => {
   const { currentUser } = firebase.auth();
   const [value, loading] = useCollection(
-    db.collection('rooms')
-      .where('owner', '==', currentUser!.uid),
+    db.collection('rooms').where('owner', '==', currentUser!.uid),
     {
       snapshotListenOptions: { includeMetadataChanges: true },
-    },
+    }
   );
-  const rooms = value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
+  const rooms =
+    value?.docs.map((room) => ({ id: room.id, ...room.data() } as IRoom)) || [];
   return [rooms, loading];
 };
 
 export const useRoom = (roomId: string): [IRoom, boolean] => {
-  const [value, loading] = useDocument(
-    db.collection('rooms').doc(roomId),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    },
-  );
-  const room = ({ id: value?.id, ...value?.data() } as IRoom);
+  const [value, loading] = useDocument(db.collection('rooms').doc(roomId), {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
+  const room = { id: value?.id, ...value?.data() } as IRoom;
   return [room, loading];
 };
 
-export const getRandomRoom = async ({
-  rooms,
-  name,
-  topics,
-  location,
-}) => {
+export const getRandomRoom = async ({ rooms, name, topics, location }) => {
   if (rooms.length > 0) {
     return rooms[Math.floor(Math.random() * rooms.length)];
   }
@@ -120,7 +118,10 @@ export const getRandomRoom = async ({
 };
 
 export const getRandomRoomByTopic = async ({
-  rooms, topic, name, location,
+  rooms,
+  topic,
+  name,
+  location,
 }) => {
   const filteredRooms = rooms.filter((room) => room.topics.includes(topic));
   if (filteredRooms.length > 0) {
@@ -134,13 +135,14 @@ export const getRandomRoomByTopic = async ({
   return room;
 };
 
-export const usePresence = (roomId: string, userId: string, peer: Peer) => {
+export const usePresence = (roomId: string, userId: string) => {
   useEffect(() => {
     const onlineRef = firebase.database().ref('.info/connected');
     const roomRef = firebase.database().ref(`/rooms/${roomId}/${userId}`);
     onlineRef.on('value', () => {
       roomRef
-        .onDisconnect().set(null)
+        .onDisconnect()
+        .set(null)
         .then(() => {
           roomRef.set(peer.id);
         });

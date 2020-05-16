@@ -9,21 +9,25 @@ const Lobby: React.FC<{}> = () => {
   const history = useHistory();
   const [activeRooms, activeRoomsLoading] = useActiveRooms();
 
-  const handleJoinRoom = React.useCallback((roomId: string) => {
-    history.push(`/room/${roomId}`);
-  }, [history]);
+  const handleJoinRoom = React.useCallback(
+    (roomId: string) => {
+      history.push(`/room/${roomId}`);
+    },
+    [history]
+  );
 
   return (
     <AppLayout currentIndex={1}>
       {activeRoomsLoading ? (
-        <Box height="50vh" display="flex" alignItems="center" justifyContent="center">
+        <Box
+          height="50vh"
+          display="flex"
+          alignItems="center"
+          justifyContent="center">
           <CircularProgress size={50} />
         </Box>
       ) : (
-        <AllRoomsList
-          rooms={activeRooms}
-          onJoinRoom={handleJoinRoom}
-        />
+        <AllRoomsList rooms={activeRooms} onJoinRoom={handleJoinRoom} />
       )}
     </AppLayout>
   );

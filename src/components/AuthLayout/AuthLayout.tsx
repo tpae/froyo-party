@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  Container, AppBar, Box, IconButton,
-} from '@material-ui/core';
+import { Container, AppBar, Box, IconButton } from '@material-ui/core';
 import Logo from '../../components/Logo';
 
 const AppLayout: React.FC<{}> = ({ children }) => (
@@ -12,8 +10,7 @@ const AppLayout: React.FC<{}> = ({ children }) => (
       background: 'url(/wave.svg) no-repeat bottom center',
       backgroundSize: '100%',
       height: '100%',
-    }}
-  >
+    }}>
     <AppBar>
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="row">
@@ -27,7 +24,11 @@ const AppLayout: React.FC<{}> = ({ children }) => (
           </Toolbar> */}
       </Box>
     </AppBar>
-    <Box paddingTop="125px" paddingLeft="15px" paddingRight="15px" margin="0 auto">
+    <Box
+      paddingTop="125px"
+      paddingLeft="15px"
+      paddingRight="15px"
+      margin="0 auto">
       {children}
     </Box>
   </Container>

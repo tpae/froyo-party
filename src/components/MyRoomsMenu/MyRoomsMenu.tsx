@@ -1,8 +1,6 @@
 import React from 'react';
 import { MoreVert } from '@material-ui/icons';
-import {
-  IconButton, Menu, MenuItem,
-} from '@material-ui/core';
+import { IconButton, Menu, MenuItem } from '@material-ui/core';
 
 const MyRoomsMenu: React.FC<{
   onEdit: (event: React.MouseEvent) => void;
@@ -20,7 +18,9 @@ const MyRoomsMenu: React.FC<{
     setAnchorEl(null);
   };
 
-  const handleSelection = (callback: (e: React.MouseEvent) => void) => (e: React.MouseEvent) => {
+  const handleSelection = (callback: (e: React.MouseEvent) => void) => (
+    e: React.MouseEvent
+  ) => {
     setAnchorEl(null);
     callback(e);
   };
@@ -30,13 +30,11 @@ const MyRoomsMenu: React.FC<{
       <IconButton onClick={handleClick}>
         <MoreVert />
       </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={handleSelection(onEdit)}>Edit Room</MenuItem>
-        <MenuItem onClick={handleSelection(onDelete)} style={{ color: 'red' }}>Delete Room</MenuItem>
+        <MenuItem onClick={handleSelection(onDelete)} style={{ color: 'red' }}>
+          Delete Room
+        </MenuItem>
       </Menu>
     </>
   );

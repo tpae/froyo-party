@@ -20,7 +20,7 @@ function usePeerCalls({
   userId: string;
   peer: Peer;
   sourceState: string;
-  sourceStream: MediaStream;
+  sourceStream?: MediaStream;
   loading: boolean;
 }): Record<string, ICall> {
   const [calls, setCalls] = React.useState<Record<string, ICall>>({});
@@ -28,24 +28,20 @@ function usePeerCalls({
   // when a room first opens, dial all the participants.
   React.useEffect(() => {
     if (
-      sourceState === 'resolved'
-      && sourceStream
-      && peer.id
-      && peers
-      && userId
-      && !loading
+      sourceState === 'resolved' &&
+      sourceStream &&
+      peer.id &&
+      peers &&
+      userId &&
+      !loading
     ) {
       Object.keys(peers).forEach((peerUserId) => {
         if (!calls[peerUserId] && peerUserId !== userId) {
-          const call = peer.call(
-            peers[peerUserId].peerId,
-            sourceStream,
-            {
-              metadata: {
-                userId: peerUserId,
-              },
+          const call = peer.call(peers[peerUserId].peerId, sourceStream, {
+            metadata: {
+              userId,
             },
-          );
+          });
 
           // if user is connected
           call.on('stream', (connectedStream: MediaStream) => {
@@ -87,8 +83,7 @@ function usePeerCalls({
         }
       });
     }
-  },
-  [
+  }, [
     peers,
     calls,
     sourceState,
@@ -101,12 +96,7 @@ function usePeerCalls({
 
   // instantiate a listeners to answer calls as they come in.
   React.useEffect(() => {
-    if (
-      sourceState === 'resolved'
-      && peer.id
-      && sourceStream
-      && !loading
-    ) {
+    if (sourceState === 'resolved' && peer.id && sourceStream && !loading) {
       peer.on('call', (call: MediaConnection) => {
         const { userId: peerUserId } = call.metadata;
         call.answer(sourceStream);
@@ -141,14 +131,20 @@ function usePeerCalls({
         });
       });
     }
-  }, [
-    sourceState,
-    sourceStream,
-    setCalls,
-    userId,
-    peer,
-    loading,
-  ]);
+  }, [sourceState, sourceStream, setCalls, userId, peer, loading]);
+
+  React.useEffect(
+    () => () => {
+      Object.keys(peer.connections).forEach((peerUserId) => {
+        peer.connections[peerUserId]
+          .filter((connection: MediaConnection) => connection.type === 'media')
+          .forEach((connection: MediaConnection) => {
+            connection.close();
+          });
+      });
+    },
+    [peer]
+  );
 
   return calls;
 }

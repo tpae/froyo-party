@@ -20,12 +20,10 @@ const RoomFormModal: React.FC<{
   onClose: () => void;
   onSubmit: (values: any) => void;
   defaultValues?: any;
-}> = ({
-  open, onClose, onSubmit, defaultValues,
-}) => {
-  const {
-    handleSubmit, register, errors, setValue,
-  } = useForm({ defaultValues });
+}> = ({ open, onClose, onSubmit, defaultValues }) => {
+  const { handleSubmit, register, errors, setValue } = useForm({
+    defaultValues,
+  });
 
   React.useEffect(() => {
     register({ name: 'visibility' }, { required: true });
@@ -35,7 +33,9 @@ const RoomFormModal: React.FC<{
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>{defaultValues ? 'Edit Room' : 'Create a Room'}</DialogTitle>
+        <DialogTitle>
+          {defaultValues ? 'Edit Room' : 'Create a Room'}
+        </DialogTitle>
         <DialogContent>
           <Box display="flex" flexDirection="column">
             <TextField
@@ -46,9 +46,11 @@ const RoomFormModal: React.FC<{
               })}
               variant="outlined"
               error={!!errors.name}
-              helperText={errors.name
-                ? errors.name.message
-                : 'This can be your team name, business, friend code etc.'}
+              helperText={
+                errors.name
+                  ? errors.name.message
+                  : 'This can be your team name, business, friend code etc.'
+              }
               style={{ marginBottom: '20px' }}
             />
             <TextField
@@ -59,9 +61,11 @@ const RoomFormModal: React.FC<{
               })}
               variant="outlined"
               error={!!errors.topics}
-              helperText={errors.topics
-                ? errors.topics.message
-                : 'Keywords that relate to your room (ie tech, education, fun, music, non-profit)'}
+              helperText={
+                errors.topics
+                  ? errors.topics.message
+                  : 'Keywords that relate to your room (ie tech, education, fun, music, non-profit)'
+              }
               style={{ marginBottom: '20px' }}
             />
             <TextField
@@ -76,18 +80,25 @@ const RoomFormModal: React.FC<{
               style={{ marginBottom: '30px' }}
             />
             <FormControl variant="outlined">
-              <InputLabel id="room-visibility-label">Room Visibility</InputLabel>
+              <InputLabel id="room-visibility-label">
+                Room Visibility
+              </InputLabel>
               <Select
                 labelId="room-visibility-label"
                 id="room-visibility"
-                defaultValue={defaultValues && defaultValues.secret ? 'private' : 'public' || 'public'}
+                defaultValue={
+                  defaultValues && defaultValues.secret
+                    ? 'private'
+                    : 'public' || 'public'
+                }
                 onChange={(e) => setValue('visibility', e.target.value)}
-                label="Room Visibility"
-              >
+                label="Room Visibility">
                 <MenuItem value="private">Private</MenuItem>
                 <MenuItem value="public">Public</MenuItem>
               </Select>
-              <FormHelperText>Public rooms can be joined by anyone</FormHelperText>
+              <FormHelperText>
+                Public rooms can be joined by anyone
+              </FormHelperText>
             </FormControl>
           </Box>
         </DialogContent>

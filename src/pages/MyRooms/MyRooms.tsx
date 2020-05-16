@@ -6,18 +6,26 @@ import AppLayout from '../../components/AppLayout';
 import MyRoomsList from '../../components/MyRoomsList';
 import RoomFormModal from '../../components/RoomFormModal';
 import {
-  useMyRooms, deleteRoom, updateRoom, IRoom,
+  useMyRooms,
+  deleteRoom,
+  updateRoom,
+  IRoom,
 } from '../../services/firebase';
 
 const MyRooms: React.FC<{}> = () => {
   const history = useHistory();
   const [myRooms, myRoomsLoading] = useMyRooms();
-  const [showEditRoom, setShowEditRoom] = React.useState<IRoom | undefined>(undefined);
+  const [showEditRoom, setShowEditRoom] = React.useState<IRoom | undefined>(
+    undefined
+  );
   const openEditRoom = Boolean(showEditRoom);
 
-  const handleJoinRoom = React.useCallback((roomId: string) => {
-    history.push(`/room/${roomId}`);
-  }, [history]);
+  const handleJoinRoom = React.useCallback(
+    (roomId: string) => {
+      history.push(`/room/${roomId}`);
+    },
+    [history]
+  );
 
   const handleDeleteRoom = React.useCallback(async (roomId: string) => {
     const { value } = await Swal.fire({
@@ -31,25 +39,27 @@ const MyRooms: React.FC<{}> = () => {
     }
   }, []);
 
-  const handleEditRoom = React.useCallback(async (values: any) => {
-    if (showEditRoom) {
-      await updateRoom(showEditRoom.id!, {
-        ...values,
-        topics: values.topics.split(','),
-        secret: values.visibility === 'private',
-      });
-      Swal.fire(
-        'Success!',
-        'Your room has been updated.',
-        'success',
-      );
-      setShowEditRoom(undefined);
-    }
-  }, [showEditRoom]);
+  const handleEditRoom = React.useCallback(
+    async (values: any) => {
+      if (showEditRoom) {
+        await updateRoom(showEditRoom.id!, {
+          ...values,
+          topics: values.topics.split(','),
+          secret: values.visibility === 'private',
+        });
+        Swal.fire('Success!', 'Your room has been updated.', 'success');
+        setShowEditRoom(undefined);
+      }
+    },
+    [showEditRoom]
+  );
 
-  const handleEditRoomModal = React.useCallback((roomId: string) => {
-    setShowEditRoom(myRooms.find((room) => room.id === roomId));
-  }, [myRooms]);
+  const handleEditRoomModal = React.useCallback(
+    (roomId: string) => {
+      setShowEditRoom(myRooms.find((room) => room.id === roomId));
+    },
+    [myRooms]
+  );
 
   const handleCloseEditRoomModal = React.useCallback(() => {
     setShowEditRoom(undefined);
@@ -58,7 +68,11 @@ const MyRooms: React.FC<{}> = () => {
   return (
     <AppLayout currentIndex={0}>
       {myRoomsLoading ? (
-        <Box height="50vh" display="flex" alignItems="center" justifyContent="center">
+        <Box
+          height="50vh"
+          display="flex"
+          alignItems="center"
+          justifyContent="center">
           <CircularProgress size={50} />
         </Box>
       ) : (

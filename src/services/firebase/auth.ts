@@ -24,17 +24,12 @@ export const getCurrentProfile = () => firebase.auth().currentUser!;
 
 export const useProfile = () => {
   const { currentUser } = firebase.auth();
-  return useDocument(
-    db.collection('users').doc(currentUser!.uid),
-    {
-      snapshotListenOptions: { includeMetadataChanges: true },
-    },
-  );
+  return useDocument(db.collection('users').doc(currentUser!.uid), {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
 };
 
-export const setProfile = async ({
-  email, displayName, picture,
-}) => {
+export const setProfile = async ({ email, displayName, picture }) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
     const user: IUser = {
@@ -49,9 +44,7 @@ export const setProfile = async ({
   return Promise.reject(new Error('You are not signed in.'));
 };
 
-export const updateProfile = async ({
-  displayName,
-}) => {
+export const updateProfile = async ({ displayName }) => {
   const { currentUser } = firebase.auth();
   if (currentUser) {
     const user: IUser = {
